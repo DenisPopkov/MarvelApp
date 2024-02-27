@@ -15,6 +15,7 @@ java {
 dependencies {
     compileOnly(libs.android.gradle.plugin)
     compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.detekt.gradlePlugin)
 }
 
 tasks {
@@ -41,6 +42,10 @@ gradlePlugin {
         register("featureUi") {
             id = "app.feature.ui"
             implementationClass = "FeatureUiConventionPlugin"
+        }
+        register("androidDetekt") {
+            id = "app.android.detekt"
+            implementationClass = "AndroidDetektConventionPlugin"
         }
     }
 }

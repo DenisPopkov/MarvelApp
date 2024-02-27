@@ -9,6 +9,7 @@ androidx-compose-bom = "2024.02.01"
 junit = "4.13.2"
 kotlin = "1.9.22"
 kotlin-coroutines = "1.8.0"
+detekt="1.23.5"
 
 # used directly in gradle plugins
 androidx-compose-compiler = "1.5.10"
@@ -28,6 +29,8 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 
 # used directly in gradle plugins
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
@@ -46,8 +49,10 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 # project internal convention plugins
 app-android-application = { id = "app.android.application", version = "unspecified" }
 app-android-library = { id = "app.android.library", version = "unspecified" }
 app-android-compose = { id = "app.android.compose", version = "unspecified" }
+app-android-detekt = { id = "app.android.detekt", version = "unspecified" }
