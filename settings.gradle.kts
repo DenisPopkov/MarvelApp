@@ -18,16 +18,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "JetpackComposeMVI"
+rootProject.name = "MarvelApp"
 include(
     ":app",
-    ":core:feature:nav",
-    ":core:feature:ui",
-    ":features:library:data",
-    ":features:library:domain",
-    ":features:library:nav",
-    ":features:library:ui",
-    ":features:spotlight:nav",
-    ":features:spotlight:ui",
     ":theme",
 )

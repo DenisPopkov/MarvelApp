@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.popkov.composesample.theme"
+    namespace = "ru.popkov.marvelapp.theme"
 }
 
 dependencies {

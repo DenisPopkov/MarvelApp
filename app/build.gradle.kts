@@ -1,14 +1,13 @@
 plugins {
     alias(libs.plugins.app.android.application)
     alias(libs.plugins.app.android.compose)
-    alias(libs.plugins.app.android.hilt)
 }
 
 android {
-    namespace = "ru.popkov.composesample"
+    namespace = "ru.popkov.marvelapp"
 
     defaultConfig {
-        applicationId = "ru.popkov.composesample"
+        applicationId = "ru.popkov.marvelapp"
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -22,7 +21,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -34,12 +36,12 @@ android {
 }
 
 dependencies {
-    implementation(project(":features:library:data"))
-    implementation(project(":features:library:ui"))
-    implementation(project(":features:spotlight:ui"))
     implementation(project(":theme"))
+    implementation(libs.kotlin.coroutines)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    debugImplementation(libs.androidx.ui.test.manifest)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }
