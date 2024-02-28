@@ -1,14 +1,3 @@
 <resources>
-    <string name="app_name">MarvelApp</string>
-    <string name="main_screen_title">Choose your hero</string>
-
-    # Hero name
-    <string name="deadpool_hero">Deadpool</string>
-    <string name="iron_man_hero">Iron Man</string>
-    <string name="spider_man_hero">Spider man</string>
-
-    # Hero desc
-    <string name="deadpool_desc">Please don’t make the super suit green…or animated!</string>
-    <string name="iron_man_desc">I AM IRON MAN</string>
-    <string name="spider_man_desc">In iron suit</string>
+    <string name="app_name" translatable="false">MarvelApp</string>
 </resources>
