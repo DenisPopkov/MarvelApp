@@ -70,5 +70,4 @@ object Theme {
         @Composable
         @ReadOnlyComposable
         get() = Size()
-
 }
