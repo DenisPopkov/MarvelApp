@@ -4,18 +4,17 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.project
 import ru.popkov.android.core.gradleplugins.libs
 
-class FeatureUiConventionPlugin : Plugin<Project> {
+class FeatureNavConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
             pluginManager.run {
                 apply("app.android.library")
-                apply("app.android.compose")
             }
 
             dependencies {
-                add("implementation", project(":core:feature:ui"))
-                add("implementation", libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
+                add("api", project(":core:feature:nav"))
+                add("implementation", libs.findLibrary("androidx-navigation").get())
             }
         }
     }

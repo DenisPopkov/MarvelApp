@@ -10,6 +10,7 @@ junit = "4.13.2"
 kotlin = "1.9.22"
 kotlin-coroutines = "1.8.0"
 detekt="1.23.5"
+androidx-navigation = "2.7.7"
 
 # used directly in gradle plugins
 androidx-compose-compiler = "1.5.10"
@@ -22,7 +23,6 @@ jvm = "19"
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core-ktx" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-espresso-core" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime-ktx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle-runtime-ktx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
@@ -31,6 +31,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlin-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 
 # used directly in gradle plugins
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
@@ -56,3 +57,5 @@ app-android-application = { id = "app.android.application", version = "unspecifi
 app-android-library = { id = "app.android.library", version = "unspecified" }
 app-android-compose = { id = "app.android.compose", version = "unspecified" }
 app-android-detekt = { id = "app.android.detekt", version = "unspecified" }
+app-feature-ui = { id = "app.feature.ui", version = "unspecified" }
+app-feature-nav = { id = "app.feature.nav", version = "unspecified" }

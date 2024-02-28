@@ -37,11 +37,9 @@ android {
 
 dependencies {
     implementation(project(":theme"))
-    implementation(libs.kotlin.coroutines)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(project(":features:main:ui"))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

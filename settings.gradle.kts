@@ -21,5 +21,9 @@ dependencyResolutionManagement {
 rootProject.name = "MarvelApp"
 include(
     ":app",
+    ":core:feature:nav",
+    ":core:feature:ui",
+    ":features:main:nav",
+    ":features:main:ui",
     ":theme",
 )

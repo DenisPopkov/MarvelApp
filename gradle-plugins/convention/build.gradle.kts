@@ -47,5 +47,9 @@ gradlePlugin {
             id = "app.android.detekt"
             implementationClass = "AndroidDetektConventionPlugin"
         }
+        register("featureNav") {
+            id = "app.feature.nav"
+            implementationClass = "FeatureNavConventionPlugin"
+        }
     }
 }

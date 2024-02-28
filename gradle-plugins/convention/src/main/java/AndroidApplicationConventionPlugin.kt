@@ -1,5 +1,7 @@
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.project
 import ru.popkov.android.core.gradleplugins.applicationExtension
 import ru.popkov.android.core.gradleplugins.configureJUnit
 import ru.popkov.android.core.gradleplugins.configureKotlin
@@ -23,8 +25,12 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 configureKotlinAndroid(this)
             }
 
+            dependencies {
+                add("implementation", project(":core:feature:ui"))
+                add("implementation", project(":core:feature:nav"))
+            }
+
             configureJUnit()
         }
     }
-
 }
