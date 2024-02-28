@@ -3,30 +3,31 @@ package ru.popkov.marvelapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
-import ru.popkov.marvelapp.theme.Theme
+import androidx.core.view.WindowCompat
+import dagger.hilt.android.AndroidEntryPoint
+import ru.popkov.android.core.feature.nav.NavProvider
+import ru.popkov.android.core.feature.nav.Navigator
+import ru.popkov.marvelapp.theme.MarvelTheme
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var navProviders: Set<@JvmSuppressWildcards NavProvider>
+
+    @Inject
+    lateinit var navigator: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-
-            val navController = rememberNavController()
-
-            Theme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    MainWindow(
-                        navController = navController
-                    )
-                }
+            MarvelTheme {
+                MainWindow(
+                    navProviders = navProviders,
+                    navigator = navigator,
+                )
             }
         }
     }

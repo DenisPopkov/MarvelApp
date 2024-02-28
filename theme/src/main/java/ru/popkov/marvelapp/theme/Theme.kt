@@ -35,7 +35,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun Theme(
+fun MarvelTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit

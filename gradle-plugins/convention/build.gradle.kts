@@ -51,5 +51,9 @@ gradlePlugin {
             id = "app.feature.nav"
             implementationClass = "FeatureNavConventionPlugin"
         }
+        register("androidHilt") {
+            id = "app.android.hilt"
+            implementationClass = "AndroidHiltConventionPlugin"
+        }
     }
 }
