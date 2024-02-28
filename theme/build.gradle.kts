@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.app.android.library)
     alias(libs.plugins.app.android.compose)
-    alias(libs.plugins.app.android.detekt)
 }
 
 android {
