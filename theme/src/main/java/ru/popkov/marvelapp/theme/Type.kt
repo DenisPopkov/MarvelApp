@@ -28,3 +28,15 @@ val InterTextExtraBold32 = TextStyle(
     fontWeight = FontWeight.ExtraBold,
     fontFamily = FontFamily(Font(R.font.inter_extra_bold)),
 )
+
+val InterTextExtraBold34 = TextStyle(
+    fontSize = 34.sp,
+    fontWeight = FontWeight.ExtraBold,
+    fontFamily = FontFamily(Font(R.font.inter_extra_bold)),
+)
+
+val InterTextBold22 = TextStyle(
+    fontSize = 22.sp,
+    fontWeight = FontWeight.Bold,
+    fontFamily = FontFamily(Font(R.font.inter_bold)),
+)
