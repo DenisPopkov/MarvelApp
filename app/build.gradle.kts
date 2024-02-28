@@ -40,6 +40,7 @@ android {
 dependencies {
     implementation(project(":theme"))
     implementation(project(":features:main:ui"))
+    implementation(project(":features:main:data"))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
