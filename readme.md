@@ -7,12 +7,17 @@
 
 # Screenshots
 
-|               Main screen first state               |              Main screen second state               |
-|:---------------------------------------------------:|:---------------------------------------------------:|
-|  <img src="assets/screenshot_1.webp" height="400">  |  <img src="assets/screenshot_3.webp" height="400">  |
-|                     Desc screen                     |                        Video                        |
-| :-------------------------------------------------: | :-------------------------------------------------: |
-|  <img src="assets/screenshot_2.webp" height="400">  |     <video src="assets/video.mp4" height="400">     |
+|              Main screen first state              |             Main screen second state              |
+|:-------------------------------------------------:|:-------------------------------------------------:|
+| <img src="assets/screenshot_1.webp" height="400"> | <img src="assets/screenshot_3.webp" height="400"> |
+
+|                    Desc screen                    |
+|:-------------------------------------------------:|
+| <img src="assets/screenshot_2.webp" height="400"> |
+
+# Video
+
+* <video src="https://github.com/DenisPopkov/MarvelApp/assets/57343209/79f1e47f-55dc-4e75-9749-2db4aed785cc" height="400"></video>
 
 # APK
 
