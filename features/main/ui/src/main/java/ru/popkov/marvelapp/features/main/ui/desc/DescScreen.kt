@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.marvelapp.features.main.ui.R
 import ru.popkov.marvelapp.theme.InterTextBold22
 import ru.popkov.marvelapp.theme.InterTextExtraBold34
+import ru.popkov.marvelapp.theme.Theme
 
 @Composable
 internal fun DescScreen(
@@ -40,23 +40,23 @@ internal fun DescScreen(
         Image(
             modifier = Modifier
                 .clickable { onBack.invoke() }
-                .padding(all = 16.dp),
+                .padding(all = Theme.size.medium),
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = "Back to main screen",
         )
         Column(
             modifier = Modifier
-                .padding(start = 20.dp, bottom = 26.dp)
+                .padding(start = Theme.size.medium, bottom = Theme.size.large)
                 .align(Alignment.BottomStart),
         ) {
             Text(
-                modifier = Modifier
-                    .padding(bottom = 32.dp),
                 text = stringResource(id = viewModel.heroNameId ?: 0),
                 style = InterTextExtraBold34,
                 color = Color.White,
             )
             Text(
+                modifier = Modifier
+                    .padding(top = Theme.size.large),
                 text = stringResource(id = viewModel.heroDescId ?: 0),
                 style = InterTextBold22,
                 color = Color.White,

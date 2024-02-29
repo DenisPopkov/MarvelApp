@@ -1,6 +1,5 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import ru.popkov.android.core.feature.nav.NavProvider
@@ -22,7 +21,7 @@ class MainNavProvider @Inject constructor(
         isStart = true,
     )
 
-    override fun graph(builder: NavGraphBuilder, snackbarHostState: SnackbarHostState) =
+    override fun graph(builder: NavGraphBuilder) =
         builder.run {
             composable(MainDestination.route) {
                 MainScreen(

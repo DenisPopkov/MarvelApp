@@ -23,12 +23,10 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,49 +42,9 @@ import coil.compose.AsyncImage
 import ru.popkov.marvelapp.features.main.domain.model.HeroCard
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
+import ru.popkov.marvelapp.theme.Theme
+import utils.rememberForeverLazyListState
 import kotlin.math.abs
-
-private val SaveMap = mutableMapOf<String, KeyParams>()
-
-private data class KeyParams(
-    val params: String = "",
-    val index: Int,
-    val scrollOffset: Int
-)
-
-/**
- * Save scroll state on all time.
- * @param key value for comparing screen
- * @param params arguments for find different between equals screen
- * @param initialFirstVisibleItemIndex see [LazyListState.firstVisibleItemIndex]
- * @param initialFirstVisibleItemScrollOffset see [LazyListState.firstVisibleItemScrollOffset]
- */
-@Composable
-fun rememberForeverLazyListState(
-    key: String,
-    params: String = "",
-    initialFirstVisibleItemIndex: Int = 0,
-    initialFirstVisibleItemScrollOffset: Int = 0
-): LazyListState {
-    val scrollState = rememberSaveable(saver = LazyListState.Saver) {
-        var savedValue = SaveMap[key]
-        if (savedValue?.params != params) savedValue = null
-        val savedIndex = savedValue?.index ?: initialFirstVisibleItemIndex
-        val savedOffset = savedValue?.scrollOffset ?: initialFirstVisibleItemScrollOffset
-        LazyListState(
-            savedIndex,
-            savedOffset
-        )
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            val lastIndex = scrollState.firstVisibleItemIndex
-            val lastOffset = scrollState.firstVisibleItemScrollOffset
-            SaveMap[key] = KeyParams(params, lastIndex, lastOffset)
-        }
-    }
-    return scrollState
-}
 
 @Composable
 internal fun MainScreen(
@@ -113,7 +71,7 @@ internal fun MainScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 30.dp),
+                .padding(top = Theme.size.large),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AsyncImage(
@@ -122,7 +80,7 @@ internal fun MainScreen(
             )
             Text(
                 modifier = Modifier
-                    .padding(top = 54.dp, bottom = 72.dp),
+                    .padding(top = Theme.size.larger, bottom = Theme.size.huge),
                 text = stringResource(id = R.string.main_screen_title),
                 style = InterTextExtraBold28,
                 color = Color.White,
@@ -229,7 +187,7 @@ private fun CardItem(
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(bottom = 60.dp, start = 28.dp),
+                    .padding(bottom = Theme.size.larger, start = Theme.size.large),
                 text = stringResource(id = cardText),
                 style = InterTextExtraBold32,
                 color = Color.White,
