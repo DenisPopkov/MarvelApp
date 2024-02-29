@@ -1,49 +1,97 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import ru.popkov.marvelapp.features.main.domain.model.HeroCard
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
 import kotlin.math.abs
 
+private val SaveMap = mutableMapOf<String, KeyParams>()
+
+private data class KeyParams(
+    val params: String = "",
+    val index: Int,
+    val scrollOffset: Int
+)
+
+/**
+ * Save scroll state on all time.
+ * @param key value for comparing screen
+ * @param params arguments for find different between equals screen
+ * @param initialFirstVisibleItemIndex see [LazyListState.firstVisibleItemIndex]
+ * @param initialFirstVisibleItemScrollOffset see [LazyListState.firstVisibleItemScrollOffset]
+ */
+@Composable
+fun rememberForeverLazyListState(
+    key: String,
+    params: String = "",
+    initialFirstVisibleItemIndex: Int = 0,
+    initialFirstVisibleItemScrollOffset: Int = 0
+): LazyListState {
+    val scrollState = rememberSaveable(saver = LazyListState.Saver) {
+        var savedValue = SaveMap[key]
+        if (savedValue?.params != params) savedValue = null
+        val savedIndex = savedValue?.index ?: initialFirstVisibleItemIndex
+        val savedOffset = savedValue?.scrollOffset ?: initialFirstVisibleItemScrollOffset
+        LazyListState(
+            savedIndex,
+            savedOffset
+        )
+    }
+    DisposableEffect(Unit) {
+        onDispose {
+            val lastIndex = scrollState.firstVisibleItemIndex
+            val lastOffset = scrollState.firstVisibleItemScrollOffset
+            SaveMap[key] = KeyParams(params, lastIndex, lastOffset)
+        }
+    }
+    return scrollState
+}
+
 @Composable
 internal fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    onCardClick: (heroImageIdArg: Int, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
 
     val heroItems by viewModel.heroData.collectAsState(initial = emptyList())
@@ -68,8 +116,8 @@ internal fun MainScreen(
                 .padding(top = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_logo),
+            AsyncImage(
+                model = "https://iili.io/JMnuvbp.png",
                 contentDescription = "Marvel logo",
             )
             Text(
@@ -92,26 +140,45 @@ internal fun MainScreen(
 @Composable
 fun HeroCards(
     list: List<HeroCard>,
-    onCardClick: (heroImageIdArg: Int, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
 
-    val state = rememberLazyListState()
+    val state = rememberForeverLazyListState(key = "Overview")
     val snappingLayout = remember(state) { SnapLayoutInfoProvider(state) }
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
-    LazyRow(
-        state = state,
-        flingBehavior = flingBehavior,
-        contentPadding = PaddingValues(horizontal = 30.dp),
-    ) {
-        items(list) {
-            CardItem(
-                state = state,
-                index = list.indexOf(it),
-                cardText = it.cardText,
-                cardImage = it.cardImage,
-                onCardClick = onCardClick
-            )
+    BoxWithConstraints {
+        LazyRow(
+            state = state,
+            flingBehavior = flingBehavior,
+        ) {
+            itemsIndexed(list) { index, hero ->
+                Layout(
+                    content = {
+                        CardItem(
+                            state = state,
+                            index = list.indexOf(hero),
+                            cardText = hero.cardText,
+                            cardImageUrl = hero.cardImageUrl,
+                            onCardClick = onCardClick
+                        )
+                    },
+                    measurePolicy = { measurable, constraints ->
+                        val placeable = measurable.first().measure(constraints)
+                        val maxWidthInPx = maxWidth.roundToPx()
+                        val itemWidth = placeable.width
+                        val startSpace =
+                            if (index == 0) (maxWidthInPx - itemWidth) / 2 else 0
+                        val endSpace =
+                            if (index == list.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
+                        val width = startSpace + placeable.width + endSpace
+                        layout(width, placeable.height) {
+                            val x = if (index == 0) startSpace else 0
+                            placeable.place(x, 0)
+                        }
+                    }
+                )
+            }
         }
     }
 }
@@ -121,8 +188,9 @@ private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
     @StringRes cardText: Int = R.string.deadpool_hero,
-    @DrawableRes cardImage: Int = R.drawable.ic_deadpool_card_image,
-    onCardClick: (heroImageIdArg: Int, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    @StringRes cardDesc: Int = R.string.deadpool_desc,
+    cardImageUrl: String = "https://ibb.co/nnrQ4JG",
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
     val scale by remember {
         derivedStateOf {
@@ -130,35 +198,31 @@ private fun CardItem(
                 ?: return@derivedStateOf 1.0f
             val halfRowWidth = state.layoutInfo.viewportSize.width / 2
             (
-                1f - minOf(
-                1f,
-                abs(currentItem.offset + (currentItem.size / 2) - halfRowWidth).toFloat() / halfRowWidth
-            ) * 0.10f
-            )
+                    1f - minOf(
+                        1f,
+                        abs(currentItem.offset + (currentItem.size / 2) - halfRowWidth).toFloat() / halfRowWidth
+                    ) * 0.30f
+                    )
         }
     }
-
-    val heroName = stringResource(id = cardText)
 
     Card(
         modifier = Modifier
             .size(width = 300.dp, height = 550.dp)
             .scale(scale)
-            .clickable {
+            .clip(shape = RoundedCornerShape(10.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(bounded = true),
+            ) {
                 onCardClick.invoke(
-                    cardImage, cardText,
-                        when {
-                        heroName.contains("Deadpool") -> R.string.deadpool_desc
-                        heroName.contains("Iron") -> R.string.iron_man_desc
-                        else -> R.string.spider_man_desc
-                    }
+                    cardImageUrl, cardText, cardDesc
                 )
             },
-        shape = RoundedCornerShape(10.dp),
     ) {
         Box {
-            Image(
-                painter = painterResource(id = cardImage),
+            AsyncImage(
+                model = cardImageUrl,
                 contentScale = ContentScale.Crop,
                 contentDescription = "Card image",
             )

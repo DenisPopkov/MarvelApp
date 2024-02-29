@@ -10,7 +10,7 @@ internal class DescViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    var heroImageId = DescDestination.Args(savedStateHandle).heroImageId
+    var heroImageUrl = DescDestination.Args(savedStateHandle).heroImageUrl
     var heroNameId = DescDestination.Args(savedStateHandle).heroNameId
     var heroDescId = DescDestination.Args(savedStateHandle).heroDescId
 }

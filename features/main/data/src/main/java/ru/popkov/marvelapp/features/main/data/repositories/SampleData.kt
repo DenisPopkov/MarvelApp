@@ -8,15 +8,18 @@ object SampleData {
         listOf(
             HeroEntity(
                 cardText = ru.popkov.marvelapp.features.main.ui.R.string.deadpool_hero,
-                cardImage = ru.popkov.marvelapp.features.main.ui.R.drawable.ic_deadpool_card_image
+                cardDesc = ru.popkov.marvelapp.features.main.ui.R.string.deadpool_desc,
+                cardImageUrl = "https://iili.io/JMnAfIV.png"
             ),
             HeroEntity(
                 cardText = ru.popkov.marvelapp.features.main.ui.R.string.iron_man_hero,
-                cardImage = ru.popkov.marvelapp.features.main.ui.R.drawable.ic_iron_man
+                cardDesc = ru.popkov.marvelapp.features.main.ui.R.string.iron_man_desc,
+                cardImageUrl = "https://iili.io/JMnuDI2.png"
             ),
             HeroEntity(
                 cardText = ru.popkov.marvelapp.features.main.ui.R.string.spider_man_hero,
-                cardImage = ru.popkov.marvelapp.features.main.ui.R.drawable.ic_spider_card_image
+                cardDesc = ru.popkov.marvelapp.features.main.ui.R.string.spider_man_desc,
+                cardImageUrl = "https://iili.io/JMnuyB9.png"
             ),
         )
     )

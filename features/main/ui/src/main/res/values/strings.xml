@@ -5,7 +5,7 @@
     # Hero name
     <string name="deadpool_hero">Deadpool</string>
     <string name="iron_man_hero">Iron Man</string>
-    <string name="spider_man_hero">Spider man</string>
+    <string name="spider_man_hero">Spider Man</string>
 
     # Hero desc
     <string name="deadpool_desc">Please don’t make the super suit green…or animated!</string>

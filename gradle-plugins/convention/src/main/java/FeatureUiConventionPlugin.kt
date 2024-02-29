@@ -22,6 +22,7 @@ class FeatureUiConventionPlugin : Plugin<Project> {
                 )
                 add("implementation", libs.findLibrary("androidx.hilt.navigation").get())
                 add("implementation", libs.findLibrary("autodagger-android").get())
+                add("implementation", libs.findLibrary("coil-compose").get())
                 add("ksp", libs.findLibrary("autodagger-compiler").get())
             }
         }

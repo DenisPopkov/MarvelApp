@@ -26,11 +26,8 @@ class MainNavProvider @Inject constructor(
         builder.run {
             composable(MainDestination.route) {
                 MainScreen(
-                    onCardClick = { heroImageId, heroNameId, heroDescId ->
-                        navigator.navigate(DescDestination(heroImageId, heroNameId, heroDescId)) {
-                            popUpTo(0)
-                            launchSingleTop = true
-                        }
+                    onCardClick = { heroImageUrl, heroNameId, heroDescId ->
+                        navigator.navigate(DescDestination(heroImageUrl, heroNameId, heroDescId))
                     },
                 )
             }

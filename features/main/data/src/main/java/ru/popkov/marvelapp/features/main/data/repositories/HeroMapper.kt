@@ -7,6 +7,7 @@ object HeroMapper {
     fun HeroEntity.toDomain() =
         HeroCard(
             cardText = cardText,
-            cardImage = cardImage,
+            cardDesc = cardDesc,
+            cardImageUrl = cardImageUrl,
         )
 }

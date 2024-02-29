@@ -1,7 +1,6 @@
 package ru.popkov.marvelapp.features.main.ui.desc
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import ru.popkov.marvelapp.features.main.ui.R
 import ru.popkov.marvelapp.theme.InterTextBold22
 import ru.popkov.marvelapp.theme.InterTextExtraBold34
@@ -29,13 +29,12 @@ internal fun DescScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Red)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxSize(),
-            painter = painterResource(id = viewModel.heroImageId ?: 0),
-            contentDescription = "Background image",
+            model = viewModel.heroImageUrl,
+            contentDescription = "Hero image",
             contentScale = ContentScale.Crop,
         )
         Image(
