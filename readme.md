@@ -21,7 +21,7 @@
 
 # APK
 
-* [MarvelApp APK](assets/app-debug.apk)
+* [MarvelApp APK](assets/app-release.apk)
 
 ## Topics
 

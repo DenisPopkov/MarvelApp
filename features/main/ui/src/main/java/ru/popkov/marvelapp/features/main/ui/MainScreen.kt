@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -118,20 +119,28 @@ fun HeroCards(
                             index = list.indexOf(hero),
                             cardText = hero.cardText,
                             cardImageUrl = hero.cardImageUrl,
+                            cardDesc = hero.cardDesc,
                             onCardClick = onCardClick
                         )
                     },
                     measurePolicy = { measurable, constraints ->
+                        val isRtl = layoutDirection == LayoutDirection.Rtl
                         val placeable = measurable.first().measure(constraints)
                         val maxWidthInPx = maxWidth.roundToPx()
                         val itemWidth = placeable.width
                         val startSpace =
-                            if (index == 0) (maxWidthInPx - itemWidth) / 2 else 0
-                        val endSpace =
                             if (index == list.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
+                        val endSpace = if (index == 0) (maxWidthInPx - itemWidth) / 2 else 0
                         val width = startSpace + placeable.width + endSpace
+
                         layout(width, placeable.height) {
-                            val x = if (index == 0) startSpace else 0
+                            val x = when {
+                                index == 0 && isRtl -> startSpace
+                                index == 0 && !isRtl -> endSpace
+                                index == list.lastIndex && isRtl -> startSpace
+                                index == list.lastIndex && !isRtl -> width - placeable.width - startSpace
+                                else -> 0
+                            }
                             placeable.place(x, 0)
                         }
                     }
