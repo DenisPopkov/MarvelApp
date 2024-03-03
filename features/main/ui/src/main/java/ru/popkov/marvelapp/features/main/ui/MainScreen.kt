@@ -129,14 +129,14 @@ fun HeroCards(
             .fillMaxSize()
             .drawBehind {
                 withTransform({
-                    translate(left = size.width / 1.7f)
+                    translate(left = size.width / 1.55f)
                     rotate(degrees = 40f)
                 }) {
                     drawRect(
                         color = backgroundColors[centerItemIndex],
                         topLeft = Offset(
                             x = size.width / 6f,
-                            y = size.height / 3F
+                            y = size.height / 2.7F
                         ),
                         size = size
                     )
