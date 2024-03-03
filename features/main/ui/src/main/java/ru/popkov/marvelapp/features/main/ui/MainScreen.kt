@@ -2,6 +2,7 @@ package ru.popkov.marvelapp.features.main.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -25,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,15 +42,15 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.HeroCard
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
+import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
 import utils.rememberForeverLazyListState
 import kotlin.math.abs
-
-val backgroundColor = mutableLongStateOf(0L)
 
 @Composable
 internal fun MainScreen(
@@ -63,7 +63,8 @@ internal fun MainScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(Colors.BackgroundColor),
         contentAlignment = Alignment.Center,
     ) {
 
@@ -195,7 +196,6 @@ private fun CardItem(
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
     val scale by remember {
-        backgroundColor.longValue = listOf(0xFF7C1599, 0xFF152B99, 0xFF991518)[index]
         derivedStateOf {
             val currentItem = state.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
                 ?: return@derivedStateOf 1.0f
@@ -238,5 +238,13 @@ private fun CardItem(
                 color = Color.White,
             )
         }
+    }
+}
+
+@UiModePreviews
+@Composable
+private fun CardItemPreview() {
+    MarvelTheme {
+        CardItem { _, _, _ -> }
     }
 }
