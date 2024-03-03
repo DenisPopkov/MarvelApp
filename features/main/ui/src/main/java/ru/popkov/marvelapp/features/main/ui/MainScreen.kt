@@ -2,7 +2,6 @@ package ru.popkov.marvelapp.features.main.ui
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -26,26 +25,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.marvelapp.features.main.domain.model.HeroCard
+import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
 import ru.popkov.marvelapp.theme.Theme
 import utils.rememberForeverLazyListState
 import kotlin.math.abs
+
+val backgroundColor = mutableLongStateOf(0L)
 
 @Composable
 internal fun MainScreen(
@@ -53,20 +58,14 @@ internal fun MainScreen(
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
 
-    val heroItems by viewModel.heroData.collectAsState(initial = emptyList())
+    val heroItems by viewModel.heroData.collectAsState()
+    val heroes = heroItems.heroModel
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center,
     ) {
-        Image(
-            modifier = Modifier
-                .fillMaxSize(),
-            painter = painterResource(id = R.drawable.ic_main_background),
-            contentDescription = "Main background",
-            contentScale = ContentScale.Crop
-        )
 
         Column(
             modifier = Modifier
@@ -88,7 +87,7 @@ internal fun MainScreen(
             )
 
             HeroCards(
-                list = heroItems,
+                list = heroes,
                 onCardClick = onCardClick
             )
         }
@@ -106,7 +105,43 @@ fun HeroCards(
     val snappingLayout = remember(state) { SnapLayoutInfoProvider(state) }
     val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
 
-    BoxWithConstraints {
+    val backgroundColors = remember {
+        listOf(
+            Colors.FirstCardColor,
+            Colors.SecondCardColor,
+            Colors.ThirdCardColor,
+        )
+    }
+
+    val centerItemIndex by remember {
+        derivedStateOf {
+            val layoutInfo = state.layoutInfo
+            val visibleItems = layoutInfo.visibleItemsInfo
+            val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
+
+            visibleItems.minByOrNull { abs((it.offset + it.size / 2) - viewportCenter) }?.index ?: 0
+        }
+    }
+
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .drawBehind {
+                withTransform({
+                    translate(left = size.width / 1.7f)
+                    rotate(degrees = 40f)
+                }) {
+                    drawRect(
+                        color = backgroundColors[centerItemIndex],
+                        topLeft = Offset(
+                            x = size.width / 6f,
+                            y = size.height / 3F
+                        ),
+                        size = size
+                    )
+                }
+            }
+    ) {
         LazyRow(
             state = state,
             flingBehavior = flingBehavior,
@@ -160,6 +195,7 @@ private fun CardItem(
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
 ) {
     val scale by remember {
+        backgroundColor.longValue = listOf(0xFF7C1599, 0xFF152B99, 0xFF991518)[index]
         derivedStateOf {
             val currentItem = state.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
                 ?: return@derivedStateOf 1.0f
