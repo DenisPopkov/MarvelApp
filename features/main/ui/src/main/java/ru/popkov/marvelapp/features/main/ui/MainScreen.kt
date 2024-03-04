@@ -10,15 +10,17 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
@@ -59,38 +61,34 @@ internal fun MainScreen(
 
     val heroItems by viewModel.heroData.collectAsState()
     val heroes = heroItems.heroModel
+    val scrollState = rememberScrollState()
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Colors.BackgroundColor),
-        contentAlignment = Alignment.Center,
+            .verticalScroll(scrollState)
+            .background(color = Colors.BackgroundColor)
+            .padding(top = Theme.size.huge),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-
-        Column(
+        AsyncImage(
+            model = "https://iili.io/JMnuvbp.png",
+            contentDescription = "Marvel logo",
+        )
+        Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .padding(top = Theme.size.large),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            AsyncImage(
-                model = "https://iili.io/JMnuvbp.png",
-                contentDescription = "Marvel logo",
-            )
-            Text(
-                modifier = Modifier
-                    .padding(top = Theme.size.larger, bottom = Theme.size.huge),
-                text = stringResource(id = R.string.main_screen_title),
-                style = InterTextExtraBold28,
-                color = Color.White,
-            )
+                .padding(top = Theme.size.larger, bottom = Theme.size.huge),
+            text = stringResource(id = R.string.main_screen_title),
+            style = InterTextExtraBold28,
+            color = Color.White,
+        )
 
-            HeroCards(
-                list = heroes,
-                onCardClick = onCardClick
-            )
-        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        HeroCards(
+            list = heroes,
+            onCardClick = onCardClick
+        )
     }
 }
 
@@ -130,7 +128,7 @@ fun HeroCards(
                 val path = Path().apply {
                     moveTo(0f, size.height)
                     lineTo(size.width, size.height)
-                    lineTo(size.width, size.height / 2)
+                    lineTo(size.width, size.height / 3f)
                     close()
                 }
                 drawPath(path, backgroundColors[centerItemIndex])
@@ -205,7 +203,8 @@ private fun CardItem(
     Card(
         modifier = Modifier
             .size(width = 300.dp, height = 550.dp)
-            .scale(scale)
+            .scale(scale = scale)
+            .padding(bottom = Theme.size.large)
             .clip(shape = RoundedCornerShape(10.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
