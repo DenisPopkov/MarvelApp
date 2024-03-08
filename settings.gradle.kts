@@ -25,5 +25,7 @@ include(
     ":core:feature:ui",
     ":features:main:nav",
     ":features:main:ui",
+    ":features:main:domain",
+    ":features:main:data",
     ":theme",
 )

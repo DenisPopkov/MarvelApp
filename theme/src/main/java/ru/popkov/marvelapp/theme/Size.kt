@@ -8,5 +8,6 @@ data class Size internal constructor(
     val small: Dp = 8.dp,
     val medium: Dp = 16.dp,
     val large: Dp = 32.dp,
-    val larger: Dp = 64.dp
+    val larger: Dp = 54.dp,
+    val huge: Dp = 72.dp,
 )

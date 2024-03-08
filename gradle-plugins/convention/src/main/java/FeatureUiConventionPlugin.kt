@@ -11,11 +11,19 @@ class FeatureUiConventionPlugin : Plugin<Project> {
             pluginManager.run {
                 apply("app.android.library")
                 apply("app.android.compose")
+                apply("app.android.hilt")
             }
 
             dependencies {
                 add("implementation", project(":core:feature:ui"))
-                add("implementation", libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
+                add(
+                    "implementation",
+                    libs.findLibrary("androidx-lifecycle-viewmodel-compose").get()
+                )
+                add("implementation", libs.findLibrary("androidx.hilt.navigation").get())
+                add("implementation", libs.findLibrary("autodagger-android").get())
+                add("implementation", libs.findLibrary("coil-compose").get())
+                add("ksp", libs.findLibrary("autodagger-compiler").get())
             }
         }
     }

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.app.android.application)
     alias(libs.plugins.app.android.compose)
     alias(libs.plugins.app.android.detekt)
+    alias(libs.plugins.app.android.hilt)
 }
 
 android {
@@ -19,9 +20,27 @@ android {
         }
     }
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
+    signingConfigs {
+        named("debug") {
+            storeFile = rootProject.file("release.keystore")
+            storePassword = "android"
+            keyAlias = "androidreleasekey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+
+        getByName("release") {
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -37,8 +56,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":theme"))
     implementation(project(":features:main:ui"))
+    implementation(project(":features:main:data"))
+    implementation(project(":theme"))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
