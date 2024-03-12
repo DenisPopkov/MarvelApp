@@ -42,6 +42,7 @@ fun MainWindow(
                 Snackbar(
                     containerColor = Color.Red,
                     snackbarData = it,
+                    contentColor = Color.White,
                 )
             }
         }

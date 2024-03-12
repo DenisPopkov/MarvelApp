@@ -13,8 +13,8 @@ interface MarvelApi {
         @Query("offset") offset: Long = 0
     ): HeroData
 
-    @GET("characters/{character_id}")
+    @GET("characters/{characterId}")
     suspend fun getHero(
-        @Path("character_id") characterId: Int,
+        @Path("characterId") characterId: Int,
     ): HeroData
 }

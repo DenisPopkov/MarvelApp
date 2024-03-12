@@ -27,8 +27,8 @@ class MainNavProvider @Inject constructor(
             composable(MainDestination.route) {
                 MainScreen(
                     snackbarHostState = snackbarHostState,
-                    onCardClick = { heroImageUrl, heroNameId, heroDescId ->
-                        navigator.navigate(DescDestination(heroImageUrl, heroNameId, heroDescId)) {
+                    onCardClick = { heroId ->
+                        navigator.navigate(DescDestination(heroId)) {
                             popUpTo(MainDestination.route)
                         }
                     },
@@ -38,7 +38,7 @@ class MainNavProvider @Inject constructor(
                 DescScreen(
                     snackbarHostState = snackbarHostState,
                     onBack = {
-                        navigator.navigate(MainDestination) {}
+                        navigator.onBackClick()
                     }
                 )
             }

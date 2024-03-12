@@ -1,8 +1,5 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -55,6 +52,8 @@ import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
 import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
+import utils.checkInternetConnection
+import utils.convertUrl
 import utils.rememberForeverLazyListState
 import kotlin.math.abs
 
@@ -62,7 +61,7 @@ import kotlin.math.abs
 internal fun MainScreen(
     snackbarHostState: SnackbarHostState,
     viewModel: MainViewModel = hiltViewModel(),
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
+    onCardClick: (heroId: String) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -115,7 +114,7 @@ internal fun MainScreen(
 @Composable
 fun HeroCards(
     list: HeroData?,
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
+    onCardClick: (heroId: String) -> Unit,
 ) {
 
     val state = rememberForeverLazyListState(key = "Overview")
@@ -165,13 +164,11 @@ fun HeroCards(
                             state = state,
                             index = heroes?.indexOf(hero) ?: 0,
                             cardText = hero.name,
-                            cardImageUrl = "${
-                                hero.thumbnail.path.replace(
-                                    "http",
-                                    "https"
-                                )
-                            }.${hero.thumbnail.extension}",
-                            cardDesc = hero.description,
+                            cardImageUrl = convertUrl(
+                                url = hero.thumbnail.path,
+                                extension = hero.thumbnail.extension
+                            ),
+                            heroId = hero.id,
                             onCardClick = onCardClick
                         )
                     },
@@ -206,10 +203,10 @@ fun HeroCards(
 private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
+    heroId: Int = 0,
     cardText: String = "Deadpool",
-    cardDesc: String = "Deadpool desc",
     cardImageUrl: String = "https://ibb.co/nnrQ4JG",
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
+    onCardClick: (heroId: String) -> Unit,
 ) {
     val scale by remember {
         derivedStateOf {
@@ -235,9 +232,7 @@ private fun CardItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
             ) {
-                onCardClick.invoke(
-                    cardImageUrl, cardText, cardDesc
-                )
+                onCardClick.invoke(heroId.toString())
             },
     ) {
         Box {
@@ -259,23 +254,10 @@ private fun CardItem(
     }
 }
 
-private fun checkInternetConnection(context: Context): Boolean {
-    val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val networkCapabilities = connectivityManager.activeNetwork ?: return false
-    val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-    return when {
-        actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-        actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-        else -> false
-    }
-}
-
 @UiModePreviews
 @Composable
 private fun CardItemPreview() {
     MarvelTheme {
-        CardItem { _, _, _ -> }
+        CardItem { _ -> }
     }
 }
