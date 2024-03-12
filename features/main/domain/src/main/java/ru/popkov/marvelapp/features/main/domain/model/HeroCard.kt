@@ -3,35 +3,34 @@ package ru.popkov.marvelapp.features.main.domain.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@Parcelize
-data class StatusCode(
-    val code: Int,
-    val status: String,
-) : Parcelable
-
+@Serializable
 @Parcelize
 data class HeroData(
-    @SerialName("status") val statusCode: StatusCode,
-    @SerialName("data") val heroData: HeroResult
+    val code: Int,
+    val status: String,
+    @SerialName("data") val data: HeroResult
 ) : Parcelable
 
+@Serializable
 @Parcelize
 data class HeroResult(
-    @SerialName("results") val heroResult: HeroCard
+    @SerialName("results") val results: List<HeroCard>
 ) : Parcelable
 
-@Parcelize
-data class HeroThumbnail(
-    @SerialName("path") val heroImageUrl: String,
-    @SerialName("extension") val imageFileExtension: String,
-) : Parcelable
-
+@Serializable
 @Parcelize
 data class HeroCard(
-    @SerialName("id") val heroId: Int,
-    @SerialName("name") val heroName: String,
-    @SerialName("description") val heroDescription: String,
-    @SerialName("thumbnail") val heroThumbnail: HeroThumbnail,
+    @SerialName("id") val id: Int,
+    @SerialName("name") val name: String,
+    @SerialName("description") val description: String,
+    @SerialName("thumbnail") val thumbnail: HeroThumbnail,
 ) : Parcelable
 
+@Serializable
+@Parcelize
+data class HeroThumbnail(
+    @SerialName("path") val path: String,
+    @SerialName("extension") val extension: String,
+) : Parcelable

@@ -1,5 +1,6 @@
 package ru.popkov.marvelapp.features.main.ui
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -94,7 +95,7 @@ internal fun MainScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeroCards(
-    list: List<HeroData>,
+    list: HeroData?,
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
 
@@ -137,15 +138,16 @@ fun HeroCards(
             state = state,
             flingBehavior = flingBehavior,
         ) {
-            itemsIndexed(list) { index, hero ->
+            val heroes = list?.data?.results
+            itemsIndexed(heroes ?: emptyList()) { index, hero ->
                 Layout(
                     content = {
                         CardItem(
                             state = state,
-                            index = list.indexOf(hero),
-                            cardText = hero.heroData.heroResult.heroName,
-                            cardImageUrl = hero.heroData.heroResult.heroThumbnail.heroImageUrl,
-                            cardDesc = hero.heroData.heroResult.heroThumbnail.imageFileExtension,
+                            index = heroes?.indexOf(hero) ?: 0,
+                            cardText = hero.name,
+                            cardImageUrl = "${hero.thumbnail.path}.${hero.thumbnail.extension}",
+                            cardDesc = hero.description,
                             onCardClick = onCardClick
                         )
                     },
@@ -155,7 +157,7 @@ fun HeroCards(
                         val maxWidthInPx = maxWidth.roundToPx()
                         val itemWidth = placeable.width
                         val startSpace =
-                            if (index == list.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
+                            if (index == heroes?.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
                         val endSpace = if (index == 0) (maxWidthInPx - itemWidth) / 2 else 0
                         val width = startSpace + placeable.width + endSpace
 
@@ -163,8 +165,8 @@ fun HeroCards(
                             val x = when {
                                 index == 0 && isRtl -> startSpace
                                 index == 0 && !isRtl -> endSpace
-                                index == list.lastIndex && isRtl -> startSpace
-                                index == list.lastIndex && !isRtl -> width - placeable.width - startSpace
+                                index == heroes?.lastIndex && isRtl -> startSpace
+                                index == heroes?.lastIndex && !isRtl -> width - placeable.width - startSpace
                                 else -> 0
                             }
                             placeable.place(x, 0)
@@ -220,6 +222,7 @@ private fun CardItem(
                 contentScale = ContentScale.Crop,
                 contentDescription = "Card image",
             )
+            Log.d("efefe", "image url - $cardImageUrl")
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

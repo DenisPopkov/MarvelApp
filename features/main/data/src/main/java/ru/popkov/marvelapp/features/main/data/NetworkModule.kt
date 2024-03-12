@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.popkov.marvelapp.features.main.data.remote.api.MarvelApi
@@ -11,14 +13,29 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+object NetworkModule {
 
     @Singleton
     @Provides
-    fun retrofit(): Retrofit =
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(createLogging())
+            .addInterceptor(AuthInterceptor())
+            .build()
+    }
+
+    private fun createLogging(): HttpLoggingInterceptor {
+        return HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BASIC)
+    }
+
+    @Singleton
+    @Provides
+    fun retrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl("developer.marvel.com/v1/")
+            .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
+            .baseUrl("https://gateway.marvel.com/v1/public/")
             .build()
 
     @Provides

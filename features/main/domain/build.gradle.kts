@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.app.feature.domain)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
