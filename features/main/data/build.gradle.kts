@@ -10,4 +10,5 @@ dependencies {
     implementation(project(":features:main:domain"))
     implementation(project(":features:main:ui")) // only for accessing to resources
     implementation(libs.kotlin.coroutines)
+    implementation(libs.bundles.retrofit)
 }

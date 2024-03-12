@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
             try {
                 _heroData.value = heroData.value.copy(isLoading = true)
                 _heroData.value = _heroData.value.copy(
-                    heroModel = heroRepository.getHero(),
+                    heroModel = emptyList(),
                     isLoading = false
                 )
             } catch (e: InternalError) {
