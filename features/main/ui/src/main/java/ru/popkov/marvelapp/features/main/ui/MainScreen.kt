@@ -77,6 +77,8 @@ internal fun MainScreen(
         // if internet connection is down, show error
         if (!checkInternetConnection(context)) {
             snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
+        } else {
+            viewModel.getHeroes()
         }
     }
 

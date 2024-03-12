@@ -1,8 +1,5 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
 import javax.inject.Inject
@@ -29,14 +25,7 @@ class MainViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
 
-    private val _isInternetAvailable = MutableStateFlow(false)
-    val isInternetAvailable = _isInternetAvailable.asStateFlow()
-
-    init {
-        runBlocking { getHeroes() }
-    }
-
-    private suspend fun getHeroes() {
+    fun getHeroes() {
         viewModelScope.launch {
             try {
                 val heroes = async { heroRepository.getHeroes() }.await()
