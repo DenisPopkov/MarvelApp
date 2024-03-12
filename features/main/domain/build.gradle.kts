@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.app.feature.domain)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
@@ -8,4 +9,5 @@ android {
 
 dependencies {
     implementation(libs.kotlin.coroutines)
+    implementation(libs.kotlinx.serialization.json)
 }

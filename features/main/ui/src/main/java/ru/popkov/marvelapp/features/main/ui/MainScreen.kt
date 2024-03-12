@@ -1,6 +1,5 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
-import ru.popkov.marvelapp.features.main.domain.model.HeroCard
+import ru.popkov.marvelapp.features.main.domain.model.HeroData
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
@@ -56,7 +55,7 @@ import kotlin.math.abs
 @Composable
 internal fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
 
     val heroItems by viewModel.heroData.collectAsState()
@@ -95,8 +94,8 @@ internal fun MainScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeroCards(
-    list: List<HeroCard>,
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    list: List<HeroData>,
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
 
     val state = rememberForeverLazyListState(key = "Overview")
@@ -144,9 +143,9 @@ fun HeroCards(
                         CardItem(
                             state = state,
                             index = list.indexOf(hero),
-                            cardText = hero.cardText,
-                            cardImageUrl = hero.cardImageUrl,
-                            cardDesc = hero.cardDesc,
+                            cardText = hero.heroData.heroResult.heroName,
+                            cardImageUrl = hero.heroData.heroResult.heroThumbnail.heroImageUrl,
+                            cardDesc = hero.heroData.heroResult.heroThumbnail.imageFileExtension,
                             onCardClick = onCardClick
                         )
                     },
@@ -181,10 +180,10 @@ fun HeroCards(
 private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
-    @StringRes cardText: Int = R.string.deadpool_hero,
-    @StringRes cardDesc: Int = R.string.deadpool_desc,
+    cardText: String = "Deadpool",
+    cardDesc: String = "Deadpool desc",
     cardImageUrl: String = "https://ibb.co/nnrQ4JG",
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
     val scale by remember {
         derivedStateOf {
@@ -225,7 +224,7 @@ private fun CardItem(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(bottom = Theme.size.larger, start = Theme.size.large),
-                text = stringResource(id = cardText),
+                text = cardText,
                 style = InterTextExtraBold32,
                 color = Color.White,
             )

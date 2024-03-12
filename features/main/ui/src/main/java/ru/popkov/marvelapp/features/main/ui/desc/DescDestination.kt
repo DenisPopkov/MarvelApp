@@ -13,8 +13,8 @@ const val heroDescIdArg = "heroDescIdArg"
 
 data class DescDestination(
     val heroImageUrl: String,
-    val heroNameId: Int,
-    val heroDescId: Int
+    val heroNameId: String,
+    val heroDescId: String
 ) :
     Destination {
 
@@ -25,24 +25,24 @@ data class DescDestination(
                 type = NavType.StringType
             },
             navArgument(heroNameIdArg) {
-                type = NavType.IntType
+                type = NavType.StringType
             },
             navArgument(heroDescIdArg) {
-                type = NavType.IntType
+                type = NavType.StringType
             }
         ),
     )
 
     data class Args(
         val heroImageUrl: String?,
-        val heroNameId: Int?,
-        val heroDescId: Int?,
+        val heroNameId: String?,
+        val heroDescId: String?,
     ) {
 
         constructor(savedStateHandle: SavedStateHandle) : this(
             heroImageUrl = savedStateHandle.get<String>(heroImageUrlArg),
-            heroNameId = savedStateHandle.get<String>(heroNameIdArg)?.toIntOrNull(),
-            heroDescId = savedStateHandle.get<String>(heroDescIdArg)?.toIntOrNull(),
+            heroNameId = savedStateHandle.get<String>(heroNameIdArg),
+            heroDescId = savedStateHandle.get<String>(heroDescIdArg),
         )
     }
 
