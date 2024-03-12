@@ -1,5 +1,8 @@
 package ru.popkov.marvelapp.features.main.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,10 +25,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -39,12 +42,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.SubcomposeAsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.HeroData
 import ru.popkov.marvelapp.theme.Colors
@@ -62,9 +65,20 @@ internal fun MainScreen(
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
 
+    val context = LocalContext.current
     val heroItems by viewModel.heroData.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val heroes = heroItems.heroModel
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
+
+        // if internet connection is down, show error
+        if (!checkInternetConnection(context)) {
+            snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -225,12 +239,9 @@ private fun CardItem(
             },
     ) {
         Box {
-            SubcomposeAsyncImage(
+            AsyncImage(
                 modifier = Modifier.size(width = 300.dp, height = 550.dp),
                 model = cardImageUrl,
-                loading = {
-                    CircularProgressIndicator()
-                },
                 contentScale = ContentScale.Crop,
                 contentDescription = "Card image",
             )
@@ -243,6 +254,19 @@ private fun CardItem(
                 color = Color.White,
             )
         }
+    }
+}
+
+private fun checkInternetConnection(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkCapabilities = connectivityManager.activeNetwork ?: return false
+    val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+    return when {
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else -> false
     }
 }
 
