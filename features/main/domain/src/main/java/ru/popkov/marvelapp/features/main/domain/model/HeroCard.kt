@@ -2,7 +2,6 @@ package ru.popkov.marvelapp.features.main.domain.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,27 +9,27 @@ import kotlinx.serialization.Serializable
 data class HeroData(
     val code: Int,
     val status: String,
-    @SerialName("data") val data: HeroResult
+    val data: HeroResult
 ) : Parcelable
 
 @Serializable
 @Parcelize
 data class HeroResult(
-    @SerialName("results") val results: List<HeroCard>
+    val results: List<HeroCard>
 ) : Parcelable
 
 @Serializable
 @Parcelize
 data class HeroCard(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
-    @SerialName("description") val description: String,
-    @SerialName("thumbnail") val thumbnail: HeroThumbnail,
+    val id: Int,
+    val name: String,
+    val description: String,
+    val thumbnail: HeroThumbnail,
 ) : Parcelable
 
 @Serializable
 @Parcelize
 data class HeroThumbnail(
-    @SerialName("path") val path: String,
-    @SerialName("extension") val extension: String,
+    val path: String,
+    val extension: String,
 ) : Parcelable

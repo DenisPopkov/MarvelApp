@@ -1,5 +1,6 @@
 package ru.popkov.android.core.feature.nav
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 
 interface NavProvider {
@@ -14,5 +15,6 @@ interface NavProvider {
 
     fun graph(
         builder: NavGraphBuilder,
+        snackbarHostState: SnackbarHostState,
     )
 }

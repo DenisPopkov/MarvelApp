@@ -1,6 +1,5 @@
 package ru.popkov.marvelapp.features.main.data
 
-import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.math.BigInteger
@@ -24,7 +23,6 @@ class AuthInterceptor : Interceptor {
                 .addQueryParameter("hash", hash)
                 .build()
 
-            Log.d("efefe", "url - $url")
             chain.proceed(it.newBuilder().url(url).build())
         }
     }

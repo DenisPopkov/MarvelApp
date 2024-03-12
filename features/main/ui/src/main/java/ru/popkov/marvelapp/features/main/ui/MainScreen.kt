@@ -1,6 +1,5 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +22,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.HeroData
 import ru.popkov.marvelapp.theme.Colors
@@ -55,6 +57,7 @@ import kotlin.math.abs
 
 @Composable
 internal fun MainScreen(
+    snackbarHostState: SnackbarHostState,
     viewModel: MainViewModel = hiltViewModel(),
     onCardClick: (heroImageUrlArg: String, heroNameIdArg: String, heroDescIdArg: String) -> Unit,
 ) {
@@ -146,7 +149,12 @@ fun HeroCards(
                             state = state,
                             index = heroes?.indexOf(hero) ?: 0,
                             cardText = hero.name,
-                            cardImageUrl = "${hero.thumbnail.path}.${hero.thumbnail.extension}",
+                            cardImageUrl = "${
+                                hero.thumbnail.path.replace(
+                                    "http",
+                                    "https"
+                                )
+                            }.${hero.thumbnail.extension}",
                             cardDesc = hero.description,
                             onCardClick = onCardClick
                         )
@@ -217,12 +225,15 @@ private fun CardItem(
             },
     ) {
         Box {
-            AsyncImage(
+            SubcomposeAsyncImage(
+                modifier = Modifier.size(width = 300.dp, height = 550.dp),
                 model = cardImageUrl,
+                loading = {
+                    CircularProgressIndicator()
+                },
                 contentScale = ContentScale.Crop,
                 contentDescription = "Card image",
             )
-            Log.d("efefe", "image url - $cardImageUrl")
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)

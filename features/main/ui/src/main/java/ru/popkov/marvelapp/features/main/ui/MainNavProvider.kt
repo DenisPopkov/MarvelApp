@@ -1,5 +1,6 @@
 package ru.popkov.marvelapp.features.main.ui
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import ru.popkov.android.core.feature.nav.NavProvider
@@ -21,17 +22,21 @@ class MainNavProvider @Inject constructor(
         isStart = true,
     )
 
-    override fun graph(builder: NavGraphBuilder) =
+    override fun graph(builder: NavGraphBuilder, snackbarHostState: SnackbarHostState) =
         builder.run {
             composable(MainDestination.route) {
                 MainScreen(
+                    snackbarHostState = snackbarHostState,
                     onCardClick = { heroImageUrl, heroNameId, heroDescId ->
-                        navigator.navigate(DescDestination(heroImageUrl, heroNameId, heroDescId))
+                        navigator.navigate(DescDestination(heroImageUrl, heroNameId, heroDescId)) {
+                            popUpTo(MainDestination.route)
+                        }
                     },
                 )
             }
             composable(DescDestination.route) {
                 DescScreen(
+                    snackbarHostState = snackbarHostState,
                     onBack = {
                         navigator.navigate(MainDestination) {}
                     }
