@@ -17,7 +17,7 @@
 
 # Video
 
-<video src="https://github.com/DenisPopkov/MarvelApp/assets/57343209/d315bf0c-e5fe-4f2b-97ca-3ef20be418c5" height="400"></video>
+<video src="https://github.com/DenisPopkov/MarvelApp/assets/57343209/511066bf-ef92-41ee-8088-da8559df352f" height="400"></video>
 
 # RTL support
 
@@ -25,7 +25,7 @@
 
 # APK
 
-* [MarvelApp APK](assets/app-debug.apk)
+* [MarvelApp APK](assets/app-release.apk)
 
 ## Topics
 
@@ -39,6 +39,7 @@
 * ViewModel
 * Data + Domain layers
 * Coroutines
+* Retrofit
 
 ## Who to contact with questions
 
