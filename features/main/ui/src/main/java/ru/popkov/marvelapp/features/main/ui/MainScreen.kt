@@ -1,6 +1,8 @@
 package ru.popkov.marvelapp.features.main.ui
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
@@ -22,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,13 +43,16 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
-import ru.popkov.marvelapp.features.main.domain.model.HeroData
+import ru.popkov.marvelapp.features.main.domain.model.HeroCard
+import ru.popkov.marvelapp.features.main.domain.model.HeroResult
+import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
@@ -73,14 +79,33 @@ internal fun MainScreen(
     LaunchedEffect(Unit) {
         errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
 
-        // if internet connection is down, show error
+        // If internet connection is down, show error
         if (!checkInternetConnection(context)) {
             snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
-        } else {
-            viewModel.getHeroes()
         }
     }
 
+    Box(
+        contentAlignment = Alignment.Center,
+    ) {
+        HeroCarousel(
+            scrollState = scrollState,
+            heroes = heroes?.data,
+            onCardClick = onCardClick,
+        )
+
+        AnimatedVisibility(visible = heroItems.isLoading) {
+            CircularProgressIndicator(color = Color.LightGray)
+        }
+    }
+}
+
+@Composable
+fun HeroCarousel(
+    scrollState: ScrollState,
+    heroes: HeroResult? = null,
+    onCardClick: (heroId: String) -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -100,12 +125,10 @@ internal fun MainScreen(
             style = InterTextExtraBold28,
             color = Color.White,
         )
-
         Spacer(modifier = Modifier.weight(1f))
-
         HeroCards(
             list = heroes,
-            onCardClick = onCardClick
+            onCardClick = onCardClick,
         )
     }
 }
@@ -113,7 +136,7 @@ internal fun MainScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeroCards(
-    list: HeroData?,
+    list: HeroResult?,
     onCardClick: (heroId: String) -> Unit,
 ) {
 
@@ -156,19 +179,14 @@ fun HeroCards(
             state = state,
             flingBehavior = flingBehavior,
         ) {
-            val heroes = list?.data?.results
+            val heroes = list?.results
             itemsIndexed(heroes ?: emptyList()) { index, hero ->
                 Layout(
                     content = {
                         CardItem(
                             state = state,
                             index = heroes?.indexOf(hero) ?: 0,
-                            cardText = hero.name,
-                            cardImageUrl = convertUrl(
-                                url = hero.thumbnail.path,
-                                extension = hero.thumbnail.extension
-                            ),
-                            heroId = hero.id,
+                            hero = hero,
                             onCardClick = onCardClick
                         )
                     },
@@ -203,11 +221,10 @@ fun HeroCards(
 private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
-    heroId: Int = 0,
-    cardText: String = "Deadpool",
-    cardImageUrl: String = "https://ibb.co/nnrQ4JG",
+    hero: HeroCard? = null,
     onCardClick: (heroId: String) -> Unit,
 ) {
+
     val scale by remember {
         derivedStateOf {
             val currentItem = state.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
@@ -232,21 +249,26 @@ private fun CardItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
             ) {
-                onCardClick.invoke(heroId.toString())
+                onCardClick.invoke(hero?.id.toString())
             },
     ) {
         Box {
             AsyncImage(
                 modifier = Modifier.size(width = 300.dp, height = 550.dp),
-                model = cardImageUrl,
+                model = convertUrl(
+                    url = hero?.thumbnail?.path ?: "",
+                    extension = hero?.thumbnail?.extension ?: ""
+                ),
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_placeholder),
+                fallback = painterResource(id = R.drawable.ic_placeholder),
                 contentDescription = "Card image",
             )
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(bottom = Theme.size.larger, start = Theme.size.large),
-                text = cardText,
+                text = hero?.name ?: "",
                 style = InterTextExtraBold32,
                 color = Color.White,
             )
@@ -256,8 +278,19 @@ private fun CardItem(
 
 @UiModePreviews
 @Composable
-private fun CardItemPreview() {
+private fun Preview() {
     MarvelTheme {
-        CardItem { _ -> }
+        val mockHero = HeroCard(
+            id = 0,
+            name = "Deadpool",
+            description = "Deadpool description",
+            thumbnail = HeroThumbnail(path = "", extension = ""),
+        )
+        HeroCarousel(
+            scrollState = rememberScrollState(),
+            heroes = HeroResult(
+                results = listOf(mockHero, mockHero.copy(id = 1)),
+            ),
+        )
     }
 }

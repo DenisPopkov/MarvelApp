@@ -3,21 +3,18 @@ package ru.popkov.marvelapp.features.main.domain.usecase
 import javax.inject.Inject
 
 class ErrorHandler @Inject constructor() {
-    enum class APICode(val code: String) {
-        NOT_FOUND(code = "404"),
-        GOOD(code = "200")
+
+    enum class APICode(val code: Int, val message: String) {
+        NOT_FOUND(code = 404, message = "Герой не найден"),
+        GOOD(code = 200, "OK"),
+        UNDEFINED(code = 500, message = "Неизвестная ошибка")
     }
 
-    enum class ErrorText(val message: String) {
-        NOT_FOUND(message = "Герой не найден"),
-        UNDEFINED(message = "Неизвестная ошибка")
-    }
-
-    operator fun invoke(error: Int): String? {
-        return when (error.toString()) {
+    operator fun invoke(code: Int): String? {
+        return when (code) {
             APICode.GOOD.code -> null
-            APICode.NOT_FOUND.code -> ErrorText.NOT_FOUND.message
-            else -> ErrorText.UNDEFINED.message
+            APICode.NOT_FOUND.code -> APICode.NOT_FOUND.message
+            else -> APICode.UNDEFINED.message
         }
     }
 }

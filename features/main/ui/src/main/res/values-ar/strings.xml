@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="main_screen_title">اختر بطلك</string>
-
-    # Hero name
-    <string name="deadpool_hero">ديدبول</string>
-    <string name="iron_man_hero">آيرون مان</string>
-    <string name="spider_man_hero">سبايدر مان</string>
-
-    # Hero desc
-    <string name="deadpool_desc">من فضلك، لا تجعل البدلة الخارقة خضراء… أو متحركة!</string>
-    <string name="iron_man_desc">أنا آيرون مان</string>
-    <string name="spider_man_desc">في بدلة حديدية</string>
-
     <string name="no_internet">لا يوجد اتصال بالإنترنت!</string>
 </resources>

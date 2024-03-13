@@ -1,11 +1,13 @@
 package ru.popkov.marvelapp.features.main.ui.desc
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import ru.popkov.android.core.feature.ui.UiModePreviews
+import ru.popkov.marvelapp.features.main.domain.model.HeroCard
+import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
 import ru.popkov.marvelapp.features.main.ui.R
 import ru.popkov.marvelapp.theme.InterTextBold22
 import ru.popkov.marvelapp.theme.InterTextExtraBold34
+import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
 import utils.checkInternetConnection
 import utils.convertUrl
@@ -45,11 +51,28 @@ internal fun DescScreen(
         // if internet connection is down, show error
         if (!checkInternetConnection(context)) {
             snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
-        } else {
-            viewModel.getHero()
         }
     }
 
+    Box(
+        contentAlignment = Alignment.Center,
+    ) {
+        Description(
+            hero = hero,
+            onBack = onBack,
+        )
+
+        AnimatedVisibility(visible = heroItem.isLoading) {
+            CircularProgressIndicator(color = Color.LightGray)
+        }
+    }
+}
+
+@Composable
+private fun Description(
+    hero: HeroCard? = null,
+    onBack: () -> Unit = {},
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,6 +84,8 @@ internal fun DescScreen(
                 url = hero?.thumbnail?.path ?: "",
                 extension = hero?.thumbnail?.extension ?: ""
             ),
+            placeholder = painterResource(id = R.drawable.ic_placeholder),
+            fallback = painterResource(id = R.drawable.ic_placeholder),
             contentDescription = "Hero image",
             contentScale = ContentScale.Crop,
         )
@@ -89,5 +114,23 @@ internal fun DescScreen(
                 color = Color.White,
             )
         }
+    }
+}
+
+@UiModePreviews
+@Composable
+private fun Preview() {
+    MarvelTheme {
+        Description(
+            hero = HeroCard(
+                id = 0,
+                name = "Deadpool",
+                description = "Deadpool description",
+                thumbnail = HeroThumbnail(
+                    path = "",
+                    extension = ""
+                )
+            )
+        )
     }
 }
