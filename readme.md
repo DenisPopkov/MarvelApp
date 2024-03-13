@@ -1,4 +1,4 @@
-# Effective lab №1, Android
+# Effective lab №2, Android
 
 ## How to run
 
