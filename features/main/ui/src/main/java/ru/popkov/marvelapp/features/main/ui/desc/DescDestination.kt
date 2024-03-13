@@ -10,27 +10,27 @@ const val descRoute = "desc"
 const val heroIdArg = "heroIdArg"
 
 data class DescDestination(
-    val heroId: String,
+    val heroId: Int,
 ) : Destination {
 
     companion object : DestinationDefinition(
         route = "$descRoute?$heroIdArg={$heroIdArg}",
         args = listOf(
             navArgument(heroIdArg) {
-                type = NavType.StringType
+                type = NavType.IntType
             },
         ),
     )
 
     data class Args(
-        val heroId: String?,
+        val heroId: Int?,
     ) {
 
         constructor(savedStateHandle: SavedStateHandle) : this(
-            heroId = savedStateHandle.get<String>(heroIdArg),
+            heroId = savedStateHandle.get<Int>(heroIdArg)
         )
     }
 
     override fun toString() =
-        "$descRoute?$heroIdArg={$heroId}"
+        "$descRoute?$heroIdArg=$heroId"
 }

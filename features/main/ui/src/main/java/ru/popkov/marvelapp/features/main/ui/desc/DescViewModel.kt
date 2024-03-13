@@ -24,8 +24,7 @@ internal class DescViewModel @Inject constructor(
     private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
-    private var heroId = DescDestination.Args(savedStateHandle).heroId.toString()
-    private val correctedHeroId = heroId.replace("{", "").replace("}", "")
+    private var heroId = DescDestination.Args(savedStateHandle).heroId
 
     private val _heroData = MutableStateFlow(HeroModelState())
     val heroData: StateFlow<HeroModelState> = _heroData
@@ -42,7 +41,7 @@ internal class DescViewModel @Inject constructor(
             try {
                 val heroes = withContext(Dispatchers.IO) {
                     _heroData.value = heroData.value.copy(isLoading = true)
-                    heroRepository.getHero(correctedHeroId.toInt())
+                    heroRepository.getHero(heroId ?: 0)
                 }
                 _errorMessage.update { errorHandler.invoke(heroes.code) }
                 _heroData.value = _heroData.value.copy(

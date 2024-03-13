@@ -67,7 +67,7 @@ import kotlin.math.abs
 internal fun MainScreen(
     snackbarHostState: SnackbarHostState,
     viewModel: MainViewModel = hiltViewModel(),
-    onCardClick: (heroId: String) -> Unit,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -104,7 +104,7 @@ internal fun MainScreen(
 fun HeroCarousel(
     scrollState: ScrollState,
     heroes: HeroResult? = null,
-    onCardClick: (heroId: String) -> Unit = {},
+    onCardClick: (heroId: Int) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -137,7 +137,7 @@ fun HeroCarousel(
 @Composable
 fun HeroCards(
     list: HeroResult?,
-    onCardClick: (heroId: String) -> Unit,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
 
     val state = rememberForeverLazyListState(key = "Overview")
@@ -222,7 +222,7 @@ private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
     hero: HeroCard? = null,
-    onCardClick: (heroId: String) -> Unit,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
 
     val scale by remember {
@@ -249,7 +249,7 @@ private fun CardItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
             ) {
-                onCardClick.invoke(hero?.id.toString())
+                onCardClick.invoke(hero?.id ?: 0)
             },
     ) {
         Box {

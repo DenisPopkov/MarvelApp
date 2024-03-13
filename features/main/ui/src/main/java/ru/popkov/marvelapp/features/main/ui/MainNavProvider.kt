@@ -34,12 +34,15 @@ class MainNavProvider @Inject constructor(
                     },
                 )
             }
-            composable(DescDestination.route) {
+            composable(
+                route = DescDestination.route,
+                arguments = DescDestination.args
+            ) {
                 DescScreen(
                     snackbarHostState = snackbarHostState,
                     onBack = {
                         navigator.onBackClick()
-                    }
+                    },
                 )
             }
         }
