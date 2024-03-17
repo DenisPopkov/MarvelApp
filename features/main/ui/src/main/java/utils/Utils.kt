@@ -1,5 +1,8 @@
 package utils
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -46,3 +49,24 @@ fun rememberForeverLazyListState(
     }
     return scrollState
 }
+
+fun checkInternetConnection(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val networkCapabilities = connectivityManager.activeNetwork ?: return false
+    val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+    return when {
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        else -> false
+    }
+}
+
+/*
+API returned thumbnail url like: http://url and extension like: .jpg
+Coil can't work with http, so we need to convert it to https and also
+concatenate extension for url to get access to image
+ */
+fun convertUrl(url: String, extension: String): String =
+    "${url.replace("http", "https")}.$extension"

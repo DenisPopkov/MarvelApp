@@ -7,45 +7,30 @@ import ru.popkov.android.core.feature.nav.Destination
 import ru.popkov.android.core.feature.nav.DestinationDefinition
 
 const val descRoute = "desc"
-const val heroImageUrlArg = "heroImageUrlArg"
-const val heroNameIdArg = "heroNameIdArg"
-const val heroDescIdArg = "heroDescIdArg"
+const val heroIdArg = "heroIdArg"
 
 data class DescDestination(
-    val heroImageUrl: String,
-    val heroNameId: Int,
-    val heroDescId: Int
-) :
-    Destination {
+    val heroId: Int,
+) : Destination {
 
     companion object : DestinationDefinition(
-        route = "$descRoute?$heroImageUrlArg={$heroImageUrlArg}?$heroNameIdArg={$heroNameIdArg}?$heroDescIdArg={$heroDescIdArg}",
+        route = "$descRoute?$heroIdArg={$heroIdArg}",
         args = listOf(
-            navArgument(heroImageUrlArg) {
-                type = NavType.StringType
-            },
-            navArgument(heroNameIdArg) {
+            navArgument(heroIdArg) {
                 type = NavType.IntType
             },
-            navArgument(heroDescIdArg) {
-                type = NavType.IntType
-            }
         ),
     )
 
     data class Args(
-        val heroImageUrl: String?,
-        val heroNameId: Int?,
-        val heroDescId: Int?,
+        val heroId: Int?,
     ) {
 
         constructor(savedStateHandle: SavedStateHandle) : this(
-            heroImageUrl = savedStateHandle.get<String>(heroImageUrlArg),
-            heroNameId = savedStateHandle.get<String>(heroNameIdArg)?.toIntOrNull(),
-            heroDescId = savedStateHandle.get<String>(heroDescIdArg)?.toIntOrNull(),
+            heroId = savedStateHandle.get<Int>(heroIdArg)
         )
     }
 
     override fun toString() =
-        "$descRoute?$heroImageUrlArg=$heroImageUrl?$heroNameIdArg=$heroNameId?$heroDescIdArg=$heroDescId"
+        "$descRoute?$heroIdArg=$heroId"
 }

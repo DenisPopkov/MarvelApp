@@ -1,7 +1,8 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
@@ -23,8 +24,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -38,6 +42,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -45,24 +51,61 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.HeroCard
+import ru.popkov.marvelapp.features.main.domain.model.HeroResult
+import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
 import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
+import utils.checkInternetConnection
+import utils.convertUrl
 import utils.rememberForeverLazyListState
 import kotlin.math.abs
 
 @Composable
 internal fun MainScreen(
+    snackbarHostState: SnackbarHostState,
     viewModel: MainViewModel = hiltViewModel(),
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
 
+    val context = LocalContext.current
     val heroItems by viewModel.heroData.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
     val heroes = heroItems.heroModel
     val scrollState = rememberScrollState()
 
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
+
+        // If internet connection is down, show error
+        if (!checkInternetConnection(context)) {
+            snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center,
+    ) {
+        HeroCarousel(
+            scrollState = scrollState,
+            heroes = heroes?.data,
+            onCardClick = onCardClick,
+        )
+
+        AnimatedVisibility(visible = heroItems.isLoading) {
+            CircularProgressIndicator(color = Color.LightGray)
+        }
+    }
+}
+
+@Composable
+fun HeroCarousel(
+    scrollState: ScrollState,
+    heroes: HeroResult? = null,
+    onCardClick: (heroId: Int) -> Unit = {},
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,12 +125,10 @@ internal fun MainScreen(
             style = InterTextExtraBold28,
             color = Color.White,
         )
-
         Spacer(modifier = Modifier.weight(1f))
-
         HeroCards(
             list = heroes,
-            onCardClick = onCardClick
+            onCardClick = onCardClick,
         )
     }
 }
@@ -95,8 +136,8 @@ internal fun MainScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeroCards(
-    list: List<HeroCard>,
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    list: HeroResult?,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
 
     val state = rememberForeverLazyListState(key = "Overview")
@@ -138,15 +179,14 @@ fun HeroCards(
             state = state,
             flingBehavior = flingBehavior,
         ) {
-            itemsIndexed(list) { index, hero ->
+            val heroes = list?.results
+            itemsIndexed(heroes ?: emptyList()) { index, hero ->
                 Layout(
                     content = {
                         CardItem(
                             state = state,
-                            index = list.indexOf(hero),
-                            cardText = hero.cardText,
-                            cardImageUrl = hero.cardImageUrl,
-                            cardDesc = hero.cardDesc,
+                            index = heroes?.indexOf(hero) ?: 0,
+                            hero = hero,
                             onCardClick = onCardClick
                         )
                     },
@@ -156,7 +196,7 @@ fun HeroCards(
                         val maxWidthInPx = maxWidth.roundToPx()
                         val itemWidth = placeable.width
                         val startSpace =
-                            if (index == list.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
+                            if (index == heroes?.lastIndex) (maxWidthInPx - itemWidth) / 2 else 0
                         val endSpace = if (index == 0) (maxWidthInPx - itemWidth) / 2 else 0
                         val width = startSpace + placeable.width + endSpace
 
@@ -164,8 +204,8 @@ fun HeroCards(
                             val x = when {
                                 index == 0 && isRtl -> startSpace
                                 index == 0 && !isRtl -> endSpace
-                                index == list.lastIndex && isRtl -> startSpace
-                                index == list.lastIndex && !isRtl -> width - placeable.width - startSpace
+                                index == heroes?.lastIndex && isRtl -> startSpace
+                                index == heroes?.lastIndex && !isRtl -> width - placeable.width - startSpace
                                 else -> 0
                             }
                             placeable.place(x, 0)
@@ -181,11 +221,10 @@ fun HeroCards(
 private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
-    @StringRes cardText: Int = R.string.deadpool_hero,
-    @StringRes cardDesc: Int = R.string.deadpool_desc,
-    cardImageUrl: String = "https://ibb.co/nnrQ4JG",
-    onCardClick: (heroImageUrlArg: String, heroNameIdArg: Int, heroDescIdArg: Int) -> Unit,
+    hero: HeroCard? = null,
+    onCardClick: (heroId: Int) -> Unit,
 ) {
+
     val scale by remember {
         derivedStateOf {
             val currentItem = state.layoutInfo.visibleItemsInfo.firstOrNull { it.index == index }
@@ -210,22 +249,26 @@ private fun CardItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
             ) {
-                onCardClick.invoke(
-                    cardImageUrl, cardText, cardDesc
-                )
+                onCardClick.invoke(hero?.id ?: 0)
             },
     ) {
         Box {
             AsyncImage(
-                model = cardImageUrl,
+                modifier = Modifier.size(width = 300.dp, height = 550.dp),
+                model = convertUrl(
+                    url = hero?.thumbnail?.path ?: "",
+                    extension = hero?.thumbnail?.extension ?: ""
+                ),
                 contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_placeholder),
+                fallback = painterResource(id = R.drawable.ic_placeholder),
                 contentDescription = "Card image",
             )
             Text(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(bottom = Theme.size.larger, start = Theme.size.large),
-                text = stringResource(id = cardText),
+                text = hero?.name ?: "",
                 style = InterTextExtraBold32,
                 color = Color.White,
             )
@@ -235,8 +278,19 @@ private fun CardItem(
 
 @UiModePreviews
 @Composable
-private fun CardItemPreview() {
+private fun Preview() {
     MarvelTheme {
-        CardItem { _, _, _ -> }
+        val mockHero = HeroCard(
+            id = 0,
+            name = "Deadpool",
+            description = "Deadpool description",
+            thumbnail = HeroThumbnail(path = "", extension = ""),
+        )
+        HeroCarousel(
+            scrollState = rememberScrollState(),
+            heroes = HeroResult(
+                results = listOf(mockHero, mockHero.copy(id = 1)),
+            ),
+        )
     }
 }
