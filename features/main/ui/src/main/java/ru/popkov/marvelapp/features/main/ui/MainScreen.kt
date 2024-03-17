@@ -76,7 +76,7 @@ internal fun MainScreen(
     val heroes = heroItems.heroModel
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(errorMessage) {
         errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
 
         // If internet connection is down, show error

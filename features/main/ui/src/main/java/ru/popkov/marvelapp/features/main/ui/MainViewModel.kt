@@ -1,18 +1,17 @@
 package ru.popkov.marvelapp.features.main.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import ru.popkov.marvelapp.features.main.domain.model.HeroData
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
-import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,20 +30,20 @@ class MainViewModel @Inject constructor(
         getHeroes()
     }
 
-    private fun getHeroes() =
-        viewModelScope.launch {
-            try {
-                val heroes = withContext(Dispatchers.IO) {
-                    _heroData.value = heroData.value.copy(isLoading = true)
-                    heroRepository.getHeroes()
-                }
-                _errorMessage.update { errorHandler.invoke(heroes.code) }
-                _heroData.value = _heroData.value.copy(
-                    heroModel = heroes,
-                    isLoading = false
-                )
-            } catch (e: IOException) {
-                _heroData.value = _heroData.value.copy(isLoading = false)
+    private fun getHeroes() {
+        val handler = CoroutineExceptionHandler { _, throwable ->
+            Log.d("MarvelApp:", "error occurred: $throwable")
+        }
+        var heroes: HeroData? = null
+        viewModelScope.launch(handler) {
+            _heroData.value = heroData.value.copy(isLoading = true)
+            heroes = heroRepository.getHeroes()
+            _heroData.value = _heroData.value.copy(heroModel = heroes, isLoading = false)
+        }.invokeOnCompletion { error ->
+            if (error != null || heroes?.code != ErrorHandler.APICode.GOOD.code) {
+                _heroData.value = _heroData.value.copy(heroModel = null, isLoading = false)
+                _errorMessage.value = errorHandler.invoke(heroes?.code ?: 0)
             }
         }
+    }
 }

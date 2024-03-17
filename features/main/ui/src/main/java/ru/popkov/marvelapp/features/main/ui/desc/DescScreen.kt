@@ -45,7 +45,7 @@ internal fun DescScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val hero = heroItem.heroModel?.data?.results?.first()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(errorMessage) {
         errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
 
         // if internet connection is down, show error
@@ -128,7 +128,7 @@ private fun Preview() {
                 description = "Deadpool description",
                 thumbnail = HeroThumbnail(
                     path = "",
-                    extension = ""
+                    extension = "",
                 )
             )
         )
