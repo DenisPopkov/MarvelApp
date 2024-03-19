@@ -9,15 +9,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.popkov.marvelapp.features.main.domain.model.HeroData
+import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
-import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val heroRepository: HeroRepository,
-    private val errorHandler: ErrorHandler,
 ) : ViewModel() {
 
     private val _heroData = MutableStateFlow(HeroModelState())
@@ -34,15 +32,14 @@ class MainViewModel @Inject constructor(
         val handler = CoroutineExceptionHandler { _, throwable ->
             Log.d("MarvelApp:", "error occurred: $throwable")
         }
-        var heroes: HeroData? = null
+        var heroes: List<Hero>?
         viewModelScope.launch(handler) {
             _heroData.value = heroData.value.copy(isLoading = true)
             heroes = heroRepository.getHeroes()
             _heroData.value = _heroData.value.copy(heroModel = heroes, isLoading = false)
         }.invokeOnCompletion { error ->
-            if (error != null || heroes?.code != ErrorHandler.APICode.GOOD.code) {
+            if (error != null) {
                 _heroData.value = _heroData.value.copy(heroModel = null, isLoading = false)
-                _errorMessage.value = errorHandler.invoke(heroes?.code ?: 0)
             }
         }
     }

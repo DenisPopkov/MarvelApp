@@ -50,17 +50,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
-import ru.popkov.marvelapp.features.main.domain.model.HeroCard
-import ru.popkov.marvelapp.features.main.domain.model.HeroResult
-import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
+import ru.popkov.marvelapp.features.main.domain.model.Hero
+import ru.popkov.marvelapp.features.main.ui.utils.checkInternetConnection
+import ru.popkov.marvelapp.features.main.ui.utils.rememberForeverLazyListState
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
 import ru.popkov.marvelapp.theme.InterTextExtraBold32
 import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
-import utils.checkInternetConnection
-import utils.convertUrl
-import utils.rememberForeverLazyListState
 import kotlin.math.abs
 
 @Composable
@@ -90,7 +87,7 @@ internal fun MainScreen(
     ) {
         HeroCarousel(
             scrollState = scrollState,
-            heroes = heroes?.data,
+            heroes = heroes,
             onCardClick = onCardClick,
         )
 
@@ -103,7 +100,7 @@ internal fun MainScreen(
 @Composable
 fun HeroCarousel(
     scrollState: ScrollState,
-    heroes: HeroResult? = null,
+    heroes: List<Hero>? = null,
     onCardClick: (heroId: Int) -> Unit = {},
 ) {
     Column(
@@ -127,7 +124,7 @@ fun HeroCarousel(
         )
         Spacer(modifier = Modifier.weight(1f))
         HeroCards(
-            list = heroes,
+            heroes = heroes,
             onCardClick = onCardClick,
         )
     }
@@ -136,7 +133,7 @@ fun HeroCarousel(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HeroCards(
-    list: HeroResult?,
+    heroes: List<Hero>?,
     onCardClick: (heroId: Int) -> Unit,
 ) {
 
@@ -179,7 +176,6 @@ fun HeroCards(
             state = state,
             flingBehavior = flingBehavior,
         ) {
-            val heroes = list?.results
             itemsIndexed(heroes ?: emptyList()) { index, hero ->
                 Layout(
                     content = {
@@ -221,7 +217,7 @@ fun HeroCards(
 private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
-    hero: HeroCard? = null,
+    hero: Hero? = null,
     onCardClick: (heroId: Int) -> Unit,
 ) {
 
@@ -255,10 +251,7 @@ private fun CardItem(
         Box {
             AsyncImage(
                 modifier = Modifier.size(width = 300.dp, height = 550.dp),
-                model = convertUrl(
-                    url = hero?.thumbnail?.path ?: "",
-                    extension = hero?.thumbnail?.extension ?: ""
-                ),
+                model = hero?.imageUrl,
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(id = R.drawable.ic_placeholder),
                 fallback = painterResource(id = R.drawable.ic_placeholder),
@@ -280,17 +273,15 @@ private fun CardItem(
 @Composable
 private fun Preview() {
     MarvelTheme {
-        val mockHero = HeroCard(
+        val mockHero = Hero(
             id = 0,
             name = "Deadpool",
             description = "Deadpool description",
-            thumbnail = HeroThumbnail(path = "", extension = ""),
+            imageUrl = "",
         )
         HeroCarousel(
             scrollState = rememberScrollState(),
-            heroes = HeroResult(
-                results = listOf(mockHero, mockHero.copy(id = 1)),
-            ),
+            heroes = listOf(mockHero, mockHero.copy(id = 1)),
         )
     }
 }

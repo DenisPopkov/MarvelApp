@@ -1,4 +1,4 @@
-package utils
+package ru.popkov.marvelapp.features.main.ui.utils
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -62,11 +62,3 @@ fun checkInternetConnection(context: Context): Boolean {
         else -> false
     }
 }
-
-/*
-API returned thumbnail url like: http://url and extension like: .jpg
-Coil can't work with http, so we need to convert it to https and also
-concatenate extension for url to get access to image
- */
-fun convertUrl(url: String, extension: String): String =
-    "${url.replace("http", "https")}.$extension"

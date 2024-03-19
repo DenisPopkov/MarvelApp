@@ -23,15 +23,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
-import ru.popkov.marvelapp.features.main.domain.model.HeroCard
-import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
+import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.ui.R
+import ru.popkov.marvelapp.features.main.ui.utils.checkInternetConnection
 import ru.popkov.marvelapp.theme.InterTextBold22
 import ru.popkov.marvelapp.theme.InterTextExtraBold34
 import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
-import utils.checkInternetConnection
-import utils.convertUrl
 
 @Composable
 internal fun DescScreen(
@@ -43,7 +41,6 @@ internal fun DescScreen(
     val context = LocalContext.current
     val heroItem by viewModel.heroData.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val hero = heroItem.heroModel?.data?.results?.first()
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
@@ -58,7 +55,7 @@ internal fun DescScreen(
         contentAlignment = Alignment.Center,
     ) {
         Description(
-            hero = hero,
+            hero = heroItem.heroModel?.first(),
             onBack = onBack,
         )
 
@@ -70,7 +67,7 @@ internal fun DescScreen(
 
 @Composable
 private fun Description(
-    hero: HeroCard? = null,
+    hero: Hero? = null,
     onBack: () -> Unit = {},
 ) {
     Box(
@@ -80,10 +77,7 @@ private fun Description(
         AsyncImage(
             modifier = Modifier
                 .fillMaxSize(),
-            model = convertUrl(
-                url = hero?.thumbnail?.path ?: "",
-                extension = hero?.thumbnail?.extension ?: ""
-            ),
+            model = hero?.imageUrl,
             placeholder = painterResource(id = R.drawable.ic_placeholder),
             fallback = painterResource(id = R.drawable.ic_placeholder),
             contentDescription = "Hero image",
@@ -122,14 +116,11 @@ private fun Description(
 private fun Preview() {
     MarvelTheme {
         Description(
-            hero = HeroCard(
+            hero = Hero(
                 id = 0,
                 name = "Deadpool",
                 description = "Deadpool description",
-                thumbnail = HeroThumbnail(
-                    path = "",
-                    extension = "",
-                )
+                imageUrl = "",
             )
         )
     }

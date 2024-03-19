@@ -1,8 +1,8 @@
 package ru.popkov.marvelapp.features.main.ui
 
-import ru.popkov.marvelapp.features.main.domain.model.HeroData
+import ru.popkov.marvelapp.features.main.domain.model.Hero
 
 data class HeroModelState(
-    val heroModel: HeroData? = null,
+    val heroModel: List<Hero>? = null,
     val isLoading: Boolean = false,
 )
