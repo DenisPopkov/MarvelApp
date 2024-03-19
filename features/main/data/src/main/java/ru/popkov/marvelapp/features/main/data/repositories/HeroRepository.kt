@@ -1,5 +1,6 @@
 package ru.popkov.marvelapp.features.main.data.repositories
 
+import ru.popkov.marvelapp.features.main.data.local.daos.HeroDao
 import ru.popkov.marvelapp.features.main.data.remote.api.MarvelApi
 import ru.popkov.marvelapp.features.main.domain.model.HeroData
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
@@ -11,6 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class HeroRepository @Inject constructor(
     private val marvelApi: MarvelApi,
+    private val heroDao: HeroDao,
 ) : HeroRepository {
     override suspend fun getHeroes(): HeroData {
         return marvelApi.getHeroes()
