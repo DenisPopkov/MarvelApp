@@ -7,7 +7,7 @@ class ErrorHandler @Inject constructor() {
     enum class APICode(val code: Int, val message: String) {
         NOT_FOUND(code = 404, message = "Герой не найден"),
         GOOD(code = 200, "OK"),
-        UNDEFINED(code = 500, message = "Неизвестная ошибка")
+        UNDEFINED(code = 500, message = "Нет интернета")
     }
 
     operator fun invoke(code: Int): String? {
