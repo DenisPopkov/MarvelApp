@@ -17,15 +17,17 @@ class HeroRepository @Inject constructor(
     private val marvelApi: MarvelApi,
     private val heroDao: HeroDao,
 ) : HeroRepository {
-    override suspend fun getHeroes(): Pair<Error, List<Hero>> {
+    override suspend fun getHeroes(): Pair<Error?, List<Hero>> {
         val heroes = marvelApi.getHeroes()
         heroDao.add(*heroes.toEntity().toTypedArray())
-        return Error(heroes.code) to heroDao.getHeroes().toDomain()
+        val errorCode = if (heroes.code == 200) null else Error(heroes.code)
+        return errorCode to heroDao.getHeroes().toDomain()
     }
 
-    override suspend fun getHero(heroId: Int): Pair<Error, Hero> {
+    override suspend fun getHero(heroId: Int): Pair<Error?, Hero> {
         val hero = marvelApi.getHero(heroId = heroId)
-        return Error(hero.code) to heroDao.findHeroById(heroId).toDomain()
+        val errorCode = if (hero.code == 200) null else Error(hero.code)
+        return errorCode to heroDao.findHeroById(heroId).toDomain()
     }
 
     override suspend fun getLocalHeroes(): List<Hero> {
