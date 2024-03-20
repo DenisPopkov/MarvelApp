@@ -1,4 +1,4 @@
-# Effective lab №2, Android
+# Effective lab MarvelApp, Android
 
 ## How to run
 
@@ -19,7 +19,7 @@
 
 # Video
 
-<video src="https://github.com/DenisPopkov/MarvelApp/assets/57343209/511066bf-ef92-41ee-8088-da8559df352f" height="400"></video>
+<video src="https://github.com/DenisPopkov/MarvelApp/assets/57343209/bd86d20c-a26e-4d1d-9aac-1bbb72814e3c" height="400"></video>
 
 # RTL support
 
