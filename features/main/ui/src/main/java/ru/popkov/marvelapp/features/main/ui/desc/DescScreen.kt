@@ -55,7 +55,7 @@ internal fun DescScreen(
         contentAlignment = Alignment.Center,
     ) {
         Description(
-            hero = heroItem.heroModel?.first(),
+            hero = heroItem.heroModel,
             onBack = onBack,
         )
 

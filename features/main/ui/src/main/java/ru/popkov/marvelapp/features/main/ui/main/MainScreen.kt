@@ -1,4 +1,4 @@
-package ru.popkov.marvelapp.features.main.ui
+package ru.popkov.marvelapp.features.main.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.Hero
+import ru.popkov.marvelapp.features.main.ui.R
 import ru.popkov.marvelapp.features.main.ui.utils.checkInternetConnection
 import ru.popkov.marvelapp.features.main.ui.utils.rememberForeverLazyListState
 import ru.popkov.marvelapp.theme.Colors

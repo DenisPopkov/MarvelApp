@@ -1,4 +1,4 @@
-package ru.popkov.marvelapp.features.main.ui
+package ru.popkov.marvelapp.features.main.ui.main
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder

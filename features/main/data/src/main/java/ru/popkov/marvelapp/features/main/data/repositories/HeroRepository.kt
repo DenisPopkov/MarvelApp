@@ -18,15 +18,25 @@ class HeroRepository @Inject constructor(
 ) : HeroRepository {
     override suspend fun getHeroes(): List<Hero> {
         val heroes = marvelApi.getHeroes()
-        heroDao.add(*heroes.toEntity().toTypedArray())
+        if (heroes.code == 200) {
+            heroDao.add(*heroes.toEntity().toTypedArray())
+        }
         return heroDao.getHeroes().toDomain()
     }
 
-    override suspend fun getHero(
-        characterId: Int,
-    ): Hero {
-        val hero = marvelApi.getHero(characterId = characterId)
-        heroDao.add(*hero.toEntity().toTypedArray())
-        return heroDao.findHeroById(characterId).toDomain()
+    override suspend fun getHero(heroId: Int): Hero {
+        val hero = marvelApi.getHero(heroId = heroId)
+        if (hero.code == 200) {
+            heroDao.add(*hero.toEntity().toTypedArray())
+        }
+        return heroDao.findHeroById(heroId).toDomain()
+    }
+
+    override suspend fun getLocalHeroes(): List<Hero> {
+        return heroDao.getHeroes().toDomain()
+    }
+
+    override suspend fun getLocalHero(heroId: Int): Hero {
+        return heroDao.findHeroById(heroId).toDomain()
     }
 }

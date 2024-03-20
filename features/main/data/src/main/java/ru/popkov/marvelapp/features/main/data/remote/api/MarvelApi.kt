@@ -15,6 +15,6 @@ interface MarvelApi {
 
     @GET("characters/{characterId}")
     suspend fun getHero(
-        @Path("characterId") characterId: Int,
+        @Path("characterId") heroId: Int,
     ): Hero
 }

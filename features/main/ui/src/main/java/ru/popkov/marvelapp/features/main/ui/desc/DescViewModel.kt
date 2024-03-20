@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
-import ru.popkov.marvelapp.features.main.ui.HeroModelState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,11 +41,16 @@ internal class DescViewModel @Inject constructor(
         var heroes: Hero
         viewModelScope.launch(handler) {
             _heroData.value = heroData.value.copy(isLoading = true)
-            heroes = heroRepository.getHero(characterId = heroId ?: 0)
-            _heroData.value = _heroData.value.copy(heroModel = listOf(heroes), isLoading = false)
+            heroes = heroRepository.getHero(heroId = heroId ?: 0)
+            _heroData.value = _heroData.value.copy(heroModel = heroes, isLoading = false)
         }.invokeOnCompletion { error ->
             if (error != null) {
-                _heroData.value = _heroData.value.copy(heroModel = null, isLoading = false)
+                viewModelScope.launch {
+                    _heroData.value = _heroData.value.copy(
+                        heroModel = heroRepository.getLocalHero(heroId ?: 0),
+                        isLoading = false,
+                    )
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package ru.popkov.marvelapp.features.main.ui
+package ru.popkov.marvelapp.features.main.ui.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -18,8 +18,8 @@ class MainViewModel @Inject constructor(
     private val heroRepository: HeroRepository,
 ) : ViewModel() {
 
-    private val _heroData = MutableStateFlow(HeroModelState())
-    val heroData: StateFlow<HeroModelState> = _heroData
+    private val _heroData = MutableStateFlow(HeroesModelState())
+    val heroData: StateFlow<HeroesModelState> = _heroData
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
@@ -39,7 +39,12 @@ class MainViewModel @Inject constructor(
             _heroData.value = _heroData.value.copy(heroModel = heroes, isLoading = false)
         }.invokeOnCompletion { error ->
             if (error != null) {
-                _heroData.value = _heroData.value.copy(heroModel = null, isLoading = false)
+                viewModelScope.launch {
+                    _heroData.value = _heroData.value.copy(
+                        heroModel = heroRepository.getLocalHeroes(),
+                        isLoading = false
+                    )
+                }
             }
         }
     }
