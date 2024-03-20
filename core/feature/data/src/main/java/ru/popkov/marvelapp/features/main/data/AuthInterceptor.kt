@@ -2,6 +2,7 @@ package ru.popkov.marvelapp.features.main.data
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import ru.popkov.android.core.feature.data.BuildConfig
 import java.math.BigInteger
 import java.security.MessageDigest
 

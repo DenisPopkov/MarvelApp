@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.app.feature.domain)
-    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.app.android.hilt)
 }
 
 android {
-    namespace = "ru.popkov.marvelapp.features.main.domain"
+    namespace = "ru.popkov.android.core.feature.domain"
 }
 
 dependencies {

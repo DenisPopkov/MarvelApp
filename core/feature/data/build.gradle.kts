@@ -11,7 +11,7 @@ val apikeyProperties = Properties()
 apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
 
 android {
-    namespace = "ru.popkov.marvelapp.features.main.data"
+    namespace = "ru.popkov.android.core.feature.data"
     defaultConfig {
         buildConfigField("String", "PUBLIC_KEY", apikeyProperties["PUBLIC_KEY"].toString())
         buildConfigField("String", "PRIVATE_KEY", apikeyProperties["PRIVATE_KEY"].toString())
@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":features:main:domain"))
+    implementation(project(":core:feature:domain"))
     implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.retrofit)
 }
