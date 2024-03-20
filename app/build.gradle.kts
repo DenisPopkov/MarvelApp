@@ -57,7 +57,7 @@ android {
 
 dependencies {
     implementation(project(":features:main:ui"))
-    implementation(project(":features:main:data"))
+    implementation(project(":core:feature:data"))
     implementation(project(":theme"))
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.espresso.core)

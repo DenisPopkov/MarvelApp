@@ -18,51 +18,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
-import ru.popkov.marvelapp.features.main.domain.model.HeroCard
-import ru.popkov.marvelapp.features.main.domain.model.HeroThumbnail
+import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.ui.R
 import ru.popkov.marvelapp.theme.InterTextBold22
 import ru.popkov.marvelapp.theme.InterTextExtraBold34
 import ru.popkov.marvelapp.theme.MarvelTheme
 import ru.popkov.marvelapp.theme.Theme
-import utils.checkInternetConnection
-import utils.convertUrl
 
 @Composable
 internal fun DescScreen(
     snackbarHostState: SnackbarHostState,
-    viewModel: DescViewModel = hiltViewModel(),
+    descViewModel: DescViewModel = hiltViewModel(),
     onBack: () -> Unit = {},
 ) {
 
-    val context = LocalContext.current
-    val heroItem by viewModel.heroData.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-    val hero = heroItem.heroModel?.data?.results?.first()
+    val state by descViewModel.state.collectAsState()
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
+    LaunchedEffect(Unit) {
+        descViewModel.effects
+            .collect { effect ->
+                when (effect) {
+                    is DescViewEffect.ShowError ->
+                        snackbarHostState.showSnackbar(effect.errorMessage)
 
-        // if internet connection is down, show error
-        if (!checkInternetConnection(context)) {
-            snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
-        }
+                    is DescViewEffect.OnBackClick -> onBack.invoke()
+                }
+            }
     }
 
     Box(
         contentAlignment = Alignment.Center,
     ) {
         Description(
-            hero = hero,
-            onBack = onBack,
+            hero = state.heroModel,
+            onBack = descViewModel::onAction,
         )
 
-        AnimatedVisibility(visible = heroItem.isLoading) {
+        AnimatedVisibility(visible = state.isLoading) {
             CircularProgressIndicator(color = Color.LightGray)
         }
     }
@@ -70,8 +66,8 @@ internal fun DescScreen(
 
 @Composable
 private fun Description(
-    hero: HeroCard? = null,
-    onBack: () -> Unit = {},
+    hero: Hero? = null,
+    onBack: (DescViewAction) -> Unit = {},
 ) {
     Box(
         modifier = Modifier
@@ -80,10 +76,7 @@ private fun Description(
         AsyncImage(
             modifier = Modifier
                 .fillMaxSize(),
-            model = convertUrl(
-                url = hero?.thumbnail?.path ?: "",
-                extension = hero?.thumbnail?.extension ?: ""
-            ),
+            model = hero?.imageUrl,
             placeholder = painterResource(id = R.drawable.ic_placeholder),
             fallback = painterResource(id = R.drawable.ic_placeholder),
             contentDescription = "Hero image",
@@ -91,7 +84,7 @@ private fun Description(
         )
         Image(
             modifier = Modifier
-                .clickable { onBack.invoke() }
+                .clickable { onBack.invoke(DescViewAction.OnBackClick) }
                 .padding(all = Theme.size.medium),
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = "Back to main screen",
@@ -122,14 +115,11 @@ private fun Description(
 private fun Preview() {
     MarvelTheme {
         Description(
-            hero = HeroCard(
+            hero = Hero(
                 id = 0,
                 name = "Deadpool",
                 description = "Deadpool description",
-                thumbnail = HeroThumbnail(
-                    path = "",
-                    extension = "",
-                )
+                imageUrl = "",
             )
         )
     }
