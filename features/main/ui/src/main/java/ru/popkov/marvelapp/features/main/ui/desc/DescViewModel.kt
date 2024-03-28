@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import ru.popkov.marvelapp.features.main.domain.model.HeroData
+import ru.popkov.marvelapp.features.main.domain.model.Hero
+import ru.popkov.marvelapp.features.main.domain.repositories.Error
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
-import ru.popkov.marvelapp.features.main.ui.HeroModelState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,15 +39,20 @@ internal class DescViewModel @Inject constructor(
         val handler = CoroutineExceptionHandler { _, throwable ->
             Log.d("MarvelApp:", "error occurred: $throwable")
         }
-        var heroes: HeroData? = null
+        var hero = Pair<Error?, Hero?>(null, null)
         viewModelScope.launch(handler) {
             _heroData.value = heroData.value.copy(isLoading = true)
-            heroes = heroRepository.getHero(characterId = heroId ?: 0)
-            _heroData.value = _heroData.value.copy(heroModel = heroes, isLoading = false)
+            hero = heroRepository.getHero(heroId = heroId ?: 0)
+            _heroData.value = _heroData.value.copy(heroModel = hero.second, isLoading = false)
         }.invokeOnCompletion { error ->
-            if (error != null || heroes?.code != ErrorHandler.APICode.GOOD.code) {
-                _heroData.value = _heroData.value.copy(heroModel = null, isLoading = false)
-                _errorMessage.value = errorHandler.invoke(heroes?.code ?: 0)
+            if (error != null || hero.first?.code != null) {
+                viewModelScope.launch {
+                    _heroData.value = _heroData.value.copy(
+                        heroModel = heroRepository.getLocalHero(heroId ?: 0),
+                        isLoading = false,
+                    )
+                    _errorMessage.value = errorHandler.invoke(hero.first?.code ?: 0)
+                }
             }
         }
     }

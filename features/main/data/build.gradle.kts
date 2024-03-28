@@ -3,6 +3,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.app.feature.data)
+    alias(libs.plugins.app.android.room)
 }
 
 val apikeyPropertiesFile = rootProject.file("apikey.properties")
@@ -23,7 +24,6 @@ android {
 
 dependencies {
     implementation(project(":features:main:domain"))
-    implementation(project(":features:main:ui")) // only for accessing to resources
     implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.retrofit)
 }
