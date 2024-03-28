@@ -4,8 +4,6 @@
 
 * You need Android studio at least Iguana
 * Run -> Run 'app'
-* Add PRIVATE_KEY=<YourPrivateKey> and PUBLIC_KEY=<YourPublicKey> in auth.properties file. Your keys
-  can get here: https://developer.marvel.com/
 
 # Screenshots
 
