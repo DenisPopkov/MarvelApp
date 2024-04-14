@@ -71,6 +71,7 @@ internal fun MainScreen(
     val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
+        mainViewModel.getHeroes()
         mainViewModel.effects
             .collect { effect ->
                 when (effect) {

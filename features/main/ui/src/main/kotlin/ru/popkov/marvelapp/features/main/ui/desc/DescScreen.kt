@@ -39,6 +39,7 @@ internal fun DescScreen(
     val state by descViewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
+        descViewModel.getHero()
         descViewModel.effects
             .collect { effect ->
                 when (effect) {

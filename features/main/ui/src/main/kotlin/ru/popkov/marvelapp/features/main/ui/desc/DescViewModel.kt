@@ -1,12 +1,10 @@
 package ru.popkov.marvelapp.features.main.ui.desc
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import ru.popkov.android.core.feature.ui.EffectsDelegate
 import ru.popkov.android.core.feature.ui.EffectsProvider
@@ -27,10 +25,6 @@ internal class DescViewModel @Inject constructor(
 
     private var heroId = DescDestination.Args(savedStateHandle).heroId
 
-    init {
-        getHero()
-    }
-
     fun onAction(action: DescViewAction) {
         when (action) {
             is DescViewAction.OnBackClick -> {
@@ -41,11 +35,8 @@ internal class DescViewModel @Inject constructor(
         }
     }
 
-    private fun getHero() {
-        val handler = CoroutineExceptionHandler { _, throwable ->
-            Log.d("MarvelApp:", "error occurred: $throwable")
-        }
-        viewModelScope.launch(handler) {
+    fun getHero() {
+        viewModelScope.launch {
             val hero = heroRepository.getHero(heroId ?: 0)
             updateState { copy(isLoading = true) }
             when (hero) {

@@ -23,10 +23,6 @@ class MainViewModel @Inject constructor(
     StateProvider<MainState> by StateDelegate(MainState()),
     EffectsProvider<MainViewEffect> by EffectsDelegate() {
 
-    init {
-        getHeroes()
-    }
-
     fun onAction(action: MainViewAction) {
         when (action) {
             is MainViewAction.OnHeroClick -> {
@@ -37,11 +33,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private fun getHeroes() {
-        val handler = CoroutineExceptionHandler { _, throwable ->
-            Log.d("MarvelApp:", "error occurred: $throwable")
-        }
-        viewModelScope.launch(handler) {
+    fun getHeroes() {
+        viewModelScope.launch {
             val heroes = heroRepository.getHeroes()
             updateState { copy(isLoading = true) }
             when (heroes) {
