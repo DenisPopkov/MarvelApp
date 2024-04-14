@@ -22,10 +22,10 @@ rootProject.name = "MarvelApp"
 include(
     ":app",
     ":core:feature:nav",
-    ":core:feature:ui",
-    ":core:feature:domain",
-    ":core:feature:data",
+    ":core:feature:compose",
     ":features:main:nav",
     ":features:main:ui",
+    ":core:feature:domain",
+    ":core:feature:data",
     ":theme",
 )

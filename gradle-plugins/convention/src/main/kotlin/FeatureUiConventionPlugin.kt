@@ -15,7 +15,7 @@ class FeatureUiConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                add("implementation", project(":core:feature:ui"))
+                add("implementation", project(":core:feature:compose"))
                 add(
                     "implementation",
                     libs.findLibrary("androidx-lifecycle-viewmodel-compose").get()

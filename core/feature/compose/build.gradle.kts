@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.popkov.android.core.feature.ui"
+    namespace = "ru.popkov.android.core.feature.compose"
 }
 
 dependencies {
