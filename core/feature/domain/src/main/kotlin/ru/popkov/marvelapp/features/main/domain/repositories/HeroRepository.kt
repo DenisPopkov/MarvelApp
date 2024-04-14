@@ -1,14 +1,13 @@
 package ru.popkov.marvelapp.features.main.domain.repositories
 
+import arrow.core.Either
 import ru.popkov.marvelapp.features.main.domain.model.Hero
-
-@JvmInline
-value class Error(val code: Int)
+import ru.popkov.marvelapp.features.main.domain.usecase.ErrorCode
 
 interface HeroRepository {
-    suspend fun getHeroes(): Pair<Error?, List<Hero>>
+    suspend fun getHeroes(): Either<ErrorCode, List<Hero>>
 
-    suspend fun getHero(heroId: Int): Pair<Error?, Hero>
+    suspend fun getHero(heroId: Int): Either<ErrorCode, Hero>
 
     suspend fun getLocalHeroes(): List<Hero>
 

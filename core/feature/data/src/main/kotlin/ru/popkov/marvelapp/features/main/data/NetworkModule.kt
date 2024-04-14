@@ -1,5 +1,7 @@
 package ru.popkov.marvelapp.features.main.data
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,12 +33,17 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun retrofit(okHttpClient: OkHttpClient): Retrofit =
-        Retrofit.Builder()
+    fun retrofit(okHttpClient: OkHttpClient): Retrofit {
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+
+        return Retrofit.Builder()
             .client(okHttpClient)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .baseUrl("https://gateway.marvel.com/v1/public/")
             .build()
+    }
 
     @Provides
     fun marvelApi(retrofit: Retrofit): MarvelApi =

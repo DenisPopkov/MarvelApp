@@ -3,6 +3,7 @@ package ru.popkov.marvelapp.features.main.ui.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -10,8 +11,6 @@ import ru.popkov.android.core.feature.ui.EffectsDelegate
 import ru.popkov.android.core.feature.ui.EffectsProvider
 import ru.popkov.android.core.feature.ui.StateDelegate
 import ru.popkov.android.core.feature.ui.StateProvider
-import ru.popkov.marvelapp.features.main.domain.model.Hero
-import ru.popkov.marvelapp.features.main.domain.repositories.Error
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
 import javax.inject.Inject
@@ -42,17 +41,18 @@ class MainViewModel @Inject constructor(
         val handler = CoroutineExceptionHandler { _, throwable ->
             Log.d("MarvelApp:", "error occurred: $throwable")
         }
-        var heroes = Pair<Error?, List<Hero>?>(null, null)
         viewModelScope.launch(handler) {
+            val heroes = heroRepository.getHeroes()
             updateState { copy(isLoading = true) }
-            heroes = heroRepository.getHeroes()
-            updateState { copy(heroModel = heroes.second, isLoading = false) }
-        }.invokeOnCompletion { error ->
-            if (error != null || heroes.first?.code != null) {
-                viewModelScope.launch {
+            when (heroes) {
+                is Either.Left -> {
                     val localHeroes = heroRepository.getLocalHeroes()
                     updateState { copy(heroModel = localHeroes, isLoading = false) }
-                    sendEffect(MainViewEffect.ShowError(errorHandler.invoke(heroes.first?.code ?: 0) ?: ""))
+                    sendEffect(MainViewEffect.ShowError(errorHandler.invoke(heroes.value.code)))
+                }
+
+                is Either.Right -> {
+                    updateState { copy(heroModel = heroes.getOrNull(), isLoading = false) }
                 }
             }
         }

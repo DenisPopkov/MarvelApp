@@ -10,4 +10,5 @@ dependencies {
     implementation(project(":core:feature:domain"))
     implementation(project(":features:main:nav"))
     implementation(project(":theme"))
+    implementation(libs.bundles.arrow)
 }

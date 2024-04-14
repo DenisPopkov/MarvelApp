@@ -26,4 +26,5 @@ dependencies {
     implementation(project(":core:feature:domain"))
     implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.retrofit)
+    implementation(libs.bundles.arrow)
 }

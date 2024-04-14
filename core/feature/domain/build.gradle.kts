@@ -11,4 +11,5 @@ android {
 dependencies {
     implementation(libs.kotlin.coroutines)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.arrow)
 }

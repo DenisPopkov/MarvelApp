@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import arrow.core.Either
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -11,8 +12,6 @@ import ru.popkov.android.core.feature.ui.EffectsDelegate
 import ru.popkov.android.core.feature.ui.EffectsProvider
 import ru.popkov.android.core.feature.ui.StateDelegate
 import ru.popkov.android.core.feature.ui.StateProvider
-import ru.popkov.marvelapp.features.main.domain.model.Hero
-import ru.popkov.marvelapp.features.main.domain.repositories.Error
 import ru.popkov.marvelapp.features.main.domain.repositories.HeroRepository
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorHandler
 import javax.inject.Inject
@@ -46,17 +45,18 @@ internal class DescViewModel @Inject constructor(
         val handler = CoroutineExceptionHandler { _, throwable ->
             Log.d("MarvelApp:", "error occurred: $throwable")
         }
-        var hero = Pair<Error?, Hero?>(null, null)
         viewModelScope.launch(handler) {
+            val hero = heroRepository.getHero(heroId ?: 0)
             updateState { copy(isLoading = true) }
-            hero = heroRepository.getHero(heroId ?: 0)
-            updateState { copy(heroModel = hero.second, isLoading = false) }
-        }.invokeOnCompletion { error ->
-            if (error != null || hero.first?.code != null) {
-                viewModelScope.launch {
+            when (hero) {
+                is Either.Left -> {
                     val localHero = heroRepository.getLocalHero(heroId ?: 0)
                     updateState { copy(heroModel = localHero, isLoading = false) }
-                    sendEffect(DescViewEffect.ShowError(errorHandler.invoke(hero.first?.code ?: 0) ?: ""))
+                    sendEffect(DescViewEffect.ShowError(errorHandler.invoke(hero.value.code)))
+                }
+
+                is Either.Right -> {
+                    updateState { copy(heroModel = hero.getOrNull(), isLoading = false) }
                 }
             }
         }
