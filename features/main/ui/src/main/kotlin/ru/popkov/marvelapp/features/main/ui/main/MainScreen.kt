@@ -51,6 +51,7 @@ import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.ui.R
+import ru.popkov.marvelapp.features.main.ui.utils.MARVEL_LOGO_URL
 import ru.popkov.marvelapp.features.main.ui.utils.rememberForeverLazyListState
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
@@ -111,7 +112,7 @@ fun HeroCarousel(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AsyncImage(
-            model = "https://iili.io/JMnuvbp.png",
+            model = MARVEL_LOGO_URL,
             contentDescription = "Marvel logo",
         )
         Text(
