@@ -43,7 +43,10 @@ class MainViewModel @Inject constructor(
         }.invokeOnCompletion { error ->
             if (error != null || heroes.first?.code != null) {
                 viewModelScope.launch {
-                    _heroData.value = _heroData.value.copy(heroModel = heroRepository.getLocalHeroes(), isLoading = false)
+                    _heroData.value = _heroData.value.copy(
+                        heroModel = heroRepository.getLocalHeroes(),
+                        isLoading = false,
+                    )
                     _errorMessage.value = errorHandler.invoke(heroes.first?.code ?: 0)
                 }
             }
