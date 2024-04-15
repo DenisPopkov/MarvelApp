@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `kotlin-dsl`
 }
@@ -7,8 +9,12 @@ plugins {
 group = "ru.popkov.android.core.gradleplugins"
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(libs.versions.jvm.get()))
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility = JavaVersion.VERSION_19
+}
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_19.toString()
     }
 }
 
@@ -16,12 +22,14 @@ dependencies {
     compileOnly(libs.android.gradle.plugin)
     compileOnly(libs.kotlin.gradle.plugin)
     compileOnly(libs.detekt.gradlePlugin)
+    compileOnly(libs.room.gradle.plugin)
+    compileOnly(libs.ksp.gradle.plugin)
 }
 
 tasks {
     validatePlugins {
-        enableStricterValidation.set(true)
-        failOnWarning.set(true)
+        enableStricterValidation = true
+        failOnWarning = true
     }
 }
 

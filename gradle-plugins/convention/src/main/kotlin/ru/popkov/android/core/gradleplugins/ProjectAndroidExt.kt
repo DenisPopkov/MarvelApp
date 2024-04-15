@@ -9,7 +9,7 @@ import org.gradle.api.plugins.PluginInstantiationException
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 
-val Project.commonExtension: CommonExtension<*, *, *, *, *>
+val Project.commonExtension: CommonExtension<*, *, *, *, *, *>
     get() = applicationExtension
         ?: libraryExtension
         ?: throw PluginInstantiationException("Can only be applied on an android Application or Library")

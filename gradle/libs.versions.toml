@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.2"
+agp = "8.3.2"
 androidx-core-ktx = "1.12.0"
 androidx-test-ext-junit = "1.1.5"
 androidx-espresso-core = "3.5.1"
@@ -12,7 +12,7 @@ kotlin-coroutines = "1.8.0"
 detekt = "1.23.5"
 androidx-navigation = "2.7.7"
 hilt = "2.51"
-ksp = "1.9.22-1.0.18"
+ksp = "1.9.23-1.0.20"
 autodagger = "1.0.0"
 javax-inject = "1"
 coil = "2.6.0"
@@ -75,6 +75,8 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 # project internal convention plugin
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "androidx-room" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 [bundles]
 retrofit = [
@@ -95,9 +97,10 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+room = { id = "androidx.room", version.ref = "androidx-room" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # project internal convention plugins
 app-android-application = { id = "app.android.application", version = "unspecified" }
