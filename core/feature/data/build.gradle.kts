@@ -27,4 +27,6 @@ dependencies {
     implementation(libs.kotlin.coroutines)
     implementation(libs.bundles.retrofit)
     implementation(libs.bundles.arrow)
+    implementation(libs.firebase.bom)
+    implementation(libs.firebase.messaging)
 }
