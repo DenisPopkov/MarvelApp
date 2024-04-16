@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -85,8 +86,9 @@ private fun Description(
         )
         Image(
             modifier = Modifier
+                .statusBarsPadding()
                 .clickable { onBack.invoke(DescViewAction.OnBackClick) }
-                .padding(horizontal = Theme.size.medium, vertical = Theme.size.large),
+                .padding(all = Theme.size.medium),
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = "Back to main screen",
         )
