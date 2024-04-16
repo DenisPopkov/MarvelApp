@@ -39,7 +39,7 @@ class NotificationService : FirebaseMessagingService() {
             return
         }
 
-        val uri = Uri.parse("marvel://hero/${message.data["heroId"]}")
+        val uri = Uri.parse("marvelapp://heroIdArg/${message.data["heroIdArg"]}")
         val intent = Intent(Intent.ACTION_VIEW, uri)
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

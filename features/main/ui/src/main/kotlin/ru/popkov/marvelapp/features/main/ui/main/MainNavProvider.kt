@@ -3,6 +3,7 @@ package ru.popkov.marvelapp.features.main.ui.main
 import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import ru.popkov.android.core.feature.nav.NavProvider
 import ru.popkov.android.core.feature.nav.Navigator
 import ru.popkov.marvelapp.features.main.nav.MainDestination
@@ -36,7 +37,10 @@ class MainNavProvider @Inject constructor(
             }
             composable(
                 route = DescDestination.route,
-                arguments = DescDestination.args
+                arguments = DescDestination.args,
+                deepLinks = listOf(navDeepLink {
+                    uriPattern = "marvelapp://heroIdArg={heroIdArg}"
+                }),
             ) {
                 DescScreen(
                     snackbarHostState = snackbarHostState,
