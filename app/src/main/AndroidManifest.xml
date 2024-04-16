@@ -39,8 +39,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
-                    android:host="hero"
-                    android:scheme="marvel" />
+                    android:host="heroIdArg"
+                    android:scheme="marvelapp"
+                    tools:ignore="AppLinkUrlError" />
             </intent-filter>
         </activity>
     </application>
