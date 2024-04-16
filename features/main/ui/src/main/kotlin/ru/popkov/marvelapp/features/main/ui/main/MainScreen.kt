@@ -42,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -52,7 +51,7 @@ import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.ui.R
-import ru.popkov.marvelapp.features.main.ui.utils.checkInternetConnection
+import ru.popkov.marvelapp.features.main.ui.utils.MARVEL_LOGO_URL
 import ru.popkov.marvelapp.features.main.ui.utils.rememberForeverLazyListState
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
@@ -64,23 +63,25 @@ import kotlin.math.abs
 @Composable
 internal fun MainScreen(
     snackbarHostState: SnackbarHostState,
-    viewModel: MainViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel = hiltViewModel(),
     onCardClick: (heroId: Int) -> Unit,
 ) {
-
-    val context = LocalContext.current
-    val heroItems by viewModel.heroData.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-    val heroes = heroItems.heroModel
+    val state by mainViewModel.state.collectAsState()
+    val localHeroes = mainViewModel.getLocalHeroes().collectAsState(initial = null)
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let { snackbarHostState.showSnackbar(message = it) }
+    LaunchedEffect(Unit) {
+        mainViewModel.getHeroes()
+        mainViewModel.effects
+            .collect { effect ->
+                when (effect) {
+                    is MainViewEffect.ShowError -> {
+                        snackbarHostState.showSnackbar(effect.errorMessage)
+                    }
 
-        // If internet connection is down, show error
-        if (!checkInternetConnection(context)) {
-            snackbarHostState.showSnackbar(message = context.getString(R.string.no_internet))
-        }
+                    is MainViewEffect.GoToDescriptionScreen -> onCardClick.invoke(effect.heroId)
+                }
+            }
     }
 
     Box(
@@ -88,11 +89,11 @@ internal fun MainScreen(
     ) {
         HeroCarousel(
             scrollState = scrollState,
-            heroes = heroes,
-            onCardClick = onCardClick,
+            heroes = localHeroes.value,
+            onCardClick = mainViewModel::onAction,
         )
 
-        AnimatedVisibility(visible = heroItems.isLoading) {
+        AnimatedVisibility(visible = state.isLoading) {
             CircularProgressIndicator(color = Color.LightGray)
         }
     }
@@ -102,7 +103,7 @@ internal fun MainScreen(
 fun HeroCarousel(
     scrollState: ScrollState,
     heroes: List<Hero>? = null,
-    onCardClick: (heroId: Int) -> Unit = {},
+    onCardClick: (MainViewAction) -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -113,7 +114,7 @@ fun HeroCarousel(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AsyncImage(
-            model = "https://iili.io/JMnuvbp.png",
+            model = MARVEL_LOGO_URL,
             contentDescription = "Marvel logo",
         )
         Text(
@@ -135,7 +136,7 @@ fun HeroCarousel(
 @Composable
 fun HeroCards(
     heroes: List<Hero>?,
-    onCardClick: (heroId: Int) -> Unit,
+    onCardClick: (MainViewAction) -> Unit = {},
 ) {
 
     val state = rememberForeverLazyListState(key = "Overview")
@@ -219,7 +220,7 @@ private fun CardItem(
     state: LazyListState = rememberLazyListState(),
     index: Int = 0,
     hero: Hero? = null,
-    onCardClick: (heroId: Int) -> Unit,
+    onCardClick: (MainViewAction) -> Unit = {},
 ) {
 
     val scale by remember {
@@ -246,7 +247,7 @@ private fun CardItem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(bounded = true),
             ) {
-                onCardClick.invoke(hero?.id ?: 0)
+                onCardClick.invoke(MainViewAction.OnHeroClick(hero?.id ?: 0))
             },
     ) {
         Box {

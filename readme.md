@@ -40,6 +40,8 @@
 * Data + Domain layers
 * Coroutines
 * Retrofit
+* MVI
+* Clean architecture
 
 ## Who to contact with questions
 

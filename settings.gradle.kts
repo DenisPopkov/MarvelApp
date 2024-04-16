@@ -25,7 +25,7 @@ include(
     ":core:feature:compose",
     ":features:main:nav",
     ":features:main:ui",
-    ":features:main:domain",
-    ":features:main:data",
+    ":core:feature:domain",
+    ":core:feature:data",
     ":theme",
 )
