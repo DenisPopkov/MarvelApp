@@ -14,7 +14,7 @@ data class DescDestination(
 ) : Destination {
 
     companion object : DestinationDefinition(
-        route = "$descRoute?$heroIdArg/{$heroIdArg}",
+        route = "$descRoute?$heroIdArg={$heroIdArg}",
         args = listOf(
             navArgument(heroIdArg) {
                 type = NavType.IntType
@@ -32,5 +32,5 @@ data class DescDestination(
     }
 
     override fun toString() =
-        "$descRoute?$heroIdArg/$heroId"
+        "$descRoute?$heroIdArg=$heroId"
 }

@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.app.android.compose)
     alias(libs.plugins.app.android.detekt)
     alias(libs.plugins.app.android.hilt)
-    alias(libs.plugins.firebase)
 }
 
 android {

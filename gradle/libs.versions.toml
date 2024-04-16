@@ -22,9 +22,6 @@ okhttp = "4.12.0"
 androidx-room = "2.6.1"
 arrow = "1.2.1"
 moshi = "1.15.1"
-firebase = "4.4.1"
-firebase-bom = "32.8.1"
-firebase-messaging = "23.4.1"
 
 # used directly in gradle plugins
 androidx-compose-compiler = "1.5.11"
@@ -54,8 +51,6 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 okhttp-loggingInterceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase-messaging" }
 
 # used directly in gradle plugins
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidx-compose-bom" }
@@ -106,7 +101,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 
 # project internal convention plugins
 app-android-application = { id = "app.android.application", version = "unspecified" }
