@@ -39,7 +39,7 @@ class MainNavProvider @Inject constructor(
                 route = DescDestination.route,
                 arguments = DescDestination.args,
                 deepLinks = listOf(navDeepLink {
-                    uriPattern = "marvelapp://heroIdArg={heroIdArg}"
+                    uriPattern = "marvelapp://heroIdArg/{heroIdArg}"
                 }),
             ) {
                 DescScreen(
