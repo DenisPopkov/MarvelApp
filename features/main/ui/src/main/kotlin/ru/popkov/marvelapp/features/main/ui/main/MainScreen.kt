@@ -66,8 +66,8 @@ internal fun MainScreen(
     mainViewModel: MainViewModel = hiltViewModel(),
     onCardClick: (heroId: Int) -> Unit,
 ) {
-
     val state by mainViewModel.state.collectAsState()
+    val localHeroes = mainViewModel.getLocalHeroes().collectAsState(initial = null)
     val scrollState = rememberScrollState()
 
     LaunchedEffect(Unit) {
@@ -75,8 +75,9 @@ internal fun MainScreen(
         mainViewModel.effects
             .collect { effect ->
                 when (effect) {
-                    is MainViewEffect.ShowError ->
+                    is MainViewEffect.ShowError -> {
                         snackbarHostState.showSnackbar(effect.errorMessage)
+                    }
 
                     is MainViewEffect.GoToDescriptionScreen -> onCardClick.invoke(effect.heroId)
                 }
@@ -88,7 +89,7 @@ internal fun MainScreen(
     ) {
         HeroCarousel(
             scrollState = scrollState,
-            heroes = state.heroModel,
+            heroes = localHeroes.value,
             onCardClick = mainViewModel::onAction,
         )
 

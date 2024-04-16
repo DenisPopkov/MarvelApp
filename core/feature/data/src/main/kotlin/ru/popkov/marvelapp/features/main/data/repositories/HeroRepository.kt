@@ -1,6 +1,8 @@
 package ru.popkov.marvelapp.features.main.data.repositories
 
 import arrow.core.Either
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ru.popkov.marvelapp.features.main.data.local.daos.HeroDao
 import ru.popkov.marvelapp.features.main.data.local.mappers.HeroMapper.toDomain
 import ru.popkov.marvelapp.features.main.data.remote.api.MarvelApi
@@ -24,8 +26,9 @@ class HeroRepository @Inject constructor(
 
         return when (heroes) {
             is Either.Right -> {
-                heroDao.add(*heroes.value.toEntity().toTypedArray())
-                Either.Right(heroDao.getHeroes().toDomain())
+                val entity = heroes.value.toEntity()
+                heroDao.add(*entity.toTypedArray())
+                Either.Right(entity.toDomain())
             }
 
             else -> Either.Left(ErrorCode(heroes.getOrNull()?.code ?: APICode.UNDEFINED.code))
@@ -37,16 +40,16 @@ class HeroRepository @Inject constructor(
         val hero = Either.catch { marvelApi.getHero(heroId) }
 
         return when (hero) {
-            is Either.Right -> Either.Right(heroDao.findHeroById(heroId).toDomain())
+            is Either.Right -> Either.Right(hero.value.toEntity().toDomain().first())
             else -> Either.Left(ErrorCode(hero.getOrNull()?.code ?: APICode.UNDEFINED.code))
         }
     }
 
-    override suspend fun getLocalHeroes(): List<Hero> {
-        return heroDao.getHeroes().toDomain()
+    override fun getLocalHeroes(): Flow<List<Hero>> {
+        return flow { emit(heroDao.getHeroes().toDomain()) }
     }
 
-    override suspend fun getLocalHero(heroId: Int): Hero {
-        return heroDao.findHeroById(heroId).toDomain()
+    override fun getLocalHero(heroId: Int): Flow<Hero> {
+        return flow { emit(heroDao.findHeroById(heroId).toDomain()) }
     }
 }

@@ -1,11 +1,9 @@
 package ru.popkov.marvelapp.features.main.ui.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.Either
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import ru.popkov.android.core.feature.ui.EffectsDelegate
 import ru.popkov.android.core.feature.ui.EffectsProvider
@@ -34,20 +32,18 @@ class MainViewModel @Inject constructor(
     }
 
     fun getHeroes() {
+        updateState { copy(isLoading = true) }
         viewModelScope.launch {
-            val heroes = heroRepository.getHeroes()
-            updateState { copy(isLoading = true) }
-            when (heroes) {
+            when (val heroes = heroRepository.getHeroes()) {
                 is Either.Left -> {
-                    val localHeroes = heroRepository.getLocalHeroes()
-                    updateState { copy(heroModel = localHeroes, isLoading = false) }
+                    updateState { copy(isLoading = false) }
                     sendEffect(MainViewEffect.ShowError(errorHandler.invoke(heroes.value.code)))
                 }
 
-                is Either.Right -> {
-                    updateState { copy(heroModel = heroes.getOrNull(), isLoading = false) }
-                }
+                is Either.Right -> updateState { copy(isLoading = false) }
             }
         }
     }
+
+    fun getLocalHeroes() = heroRepository.getLocalHeroes()
 }

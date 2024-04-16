@@ -41,15 +41,13 @@ internal class DescViewModel @Inject constructor(
             updateState { copy(isLoading = true) }
             when (hero) {
                 is Either.Left -> {
-                    val localHero = heroRepository.getLocalHero(heroId ?: 0)
-                    updateState { copy(heroModel = localHero, isLoading = false) }
                     sendEffect(DescViewEffect.ShowError(errorHandler.invoke(hero.value.code)))
                 }
 
-                is Either.Right -> {
-                    updateState { copy(heroModel = hero.getOrNull(), isLoading = false) }
-                }
+                is Either.Right -> updateState { copy(isLoading = false) }
             }
         }
     }
+
+    fun getLocalHero() = heroRepository.getLocalHero(heroId ?: 0)
 }

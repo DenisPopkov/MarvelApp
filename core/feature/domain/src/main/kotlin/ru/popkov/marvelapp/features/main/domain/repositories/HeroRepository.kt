@@ -1,6 +1,7 @@
 package ru.popkov.marvelapp.features.main.domain.repositories
 
 import arrow.core.Either
+import kotlinx.coroutines.flow.Flow
 import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.domain.usecase.ErrorCode
 
@@ -9,7 +10,7 @@ interface HeroRepository {
 
     suspend fun getHero(heroId: Int): Either<ErrorCode, Hero>
 
-    suspend fun getLocalHeroes(): List<Hero>
+    fun getLocalHeroes(): Flow<List<Hero>>
 
-    suspend fun getLocalHero(heroId: Int): Hero
+    fun getLocalHero(heroId: Int): Flow<Hero>
 }

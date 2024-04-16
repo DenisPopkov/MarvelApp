@@ -35,8 +35,8 @@ internal fun DescScreen(
     descViewModel: DescViewModel = hiltViewModel(),
     onBack: () -> Unit = {},
 ) {
-
     val state by descViewModel.state.collectAsState()
+    val localHero = descViewModel.getLocalHero().collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
         descViewModel.getHero()
@@ -55,7 +55,7 @@ internal fun DescScreen(
         contentAlignment = Alignment.Center,
     ) {
         Description(
-            hero = state.heroModel,
+            hero = localHero.value,
             onBack = descViewModel::onAction,
         )
 
