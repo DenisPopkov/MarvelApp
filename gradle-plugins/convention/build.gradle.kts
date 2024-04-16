@@ -63,5 +63,9 @@ gradlePlugin {
             id = "app.feature.data"
             implementationClass = "FeatureDataConventionPlugin"
         }
+        register("androidRoom") {
+            id = "app.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
+        }
     }
 }
