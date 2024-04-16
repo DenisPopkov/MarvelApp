@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:name=".Application"
@@ -16,6 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MarvelApp"
         tools:targetApi="31">
+
+        <service
+            android:name=".features.main.data.services.NotificationService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name="ru.popkov.marvelapp.MainActivity"
             android:exported="true"
@@ -23,6 +33,14 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="hero"
+                    android:scheme="marvel" />
             </intent-filter>
         </activity>
     </application>
