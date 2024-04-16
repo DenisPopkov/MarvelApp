@@ -72,7 +72,7 @@ private fun Description(
 ) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
     ) {
         AsyncImage(
             modifier = Modifier
@@ -86,7 +86,7 @@ private fun Description(
         Image(
             modifier = Modifier
                 .clickable { onBack.invoke(DescViewAction.OnBackClick) }
-                .padding(all = Theme.size.medium),
+                .padding(horizontal = Theme.size.medium, vertical = Theme.size.large),
             painter = painterResource(id = R.drawable.ic_arrow_left),
             contentDescription = "Back to main screen",
         )

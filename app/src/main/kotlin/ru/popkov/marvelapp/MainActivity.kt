@@ -14,6 +14,7 @@ import ru.popkov.android.core.feature.nav.NavProvider
 import ru.popkov.android.core.feature.nav.Navigator
 import ru.popkov.marvelapp.theme.MarvelTheme
 import javax.inject.Inject
+import androidx.activity.enableEdgeToEdge
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        enableEdgeToEdge()
         WindowCompat.setDecorFitsSystemWindows(window, false)
         askNotificationPermission()
         setContent {

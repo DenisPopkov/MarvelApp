@@ -2,6 +2,7 @@ package ru.popkov.marvelapp.features.main.ui.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,6 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +53,6 @@ import coil.compose.AsyncImage
 import ru.popkov.android.core.feature.ui.UiModePreviews
 import ru.popkov.marvelapp.features.main.domain.model.Hero
 import ru.popkov.marvelapp.features.main.ui.R
-import ru.popkov.marvelapp.features.main.ui.utils.MARVEL_LOGO_URL
 import ru.popkov.marvelapp.features.main.ui.utils.rememberForeverLazyListState
 import ru.popkov.marvelapp.theme.Colors
 import ru.popkov.marvelapp.theme.InterTextExtraBold28
@@ -109,12 +110,12 @@ fun HeroCarousel(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .background(color = Colors.BackgroundColor)
+            .background(color = MaterialTheme.colorScheme.background)
             .padding(top = Theme.size.huge),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AsyncImage(
-            model = MARVEL_LOGO_URL,
+        Image(
+            painter = painterResource(id = R.drawable.ic_logo),
             contentDescription = "Marvel logo",
         )
         Text(
@@ -122,7 +123,7 @@ fun HeroCarousel(
                 .padding(top = Theme.size.larger, bottom = Theme.size.huge),
             text = stringResource(id = R.string.main_screen_title),
             style = InterTextExtraBold28,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
         )
         Spacer(modifier = Modifier.weight(1f))
         HeroCards(
