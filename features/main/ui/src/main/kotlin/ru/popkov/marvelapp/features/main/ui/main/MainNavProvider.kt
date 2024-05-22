@@ -9,6 +9,8 @@ import ru.popkov.android.core.feature.nav.Navigator
 import ru.popkov.marvelapp.features.main.nav.MainDestination
 import ru.popkov.marvelapp.features.main.ui.desc.DescDestination
 import ru.popkov.marvelapp.features.main.ui.desc.DescScreen
+import ru.popkov.marvelapp.theme.MarvelTheme
+import ru.popkov.marvelapp.theme.MarvelThemeInfinite
 import se.ansman.dagger.auto.AutoBindIntoSet
 import javax.inject.Inject
 
@@ -26,14 +28,16 @@ class MainNavProvider @Inject constructor(
     override fun graph(builder: NavGraphBuilder, snackbarHostState: SnackbarHostState) =
         builder.run {
             composable(MainDestination.route) {
-                MainScreen(
-                    snackbarHostState = snackbarHostState,
-                    onCardClick = { heroId ->
-                        navigator.navigate(DescDestination(heroId)) {
-                            popUpTo(MainDestination.route)
-                        }
-                    },
-                )
+                MarvelTheme {
+                    MainScreen(
+                        snackbarHostState = snackbarHostState,
+                        onCardClick = { heroId ->
+                            navigator.navigate(DescDestination(heroId)) {
+                                popUpTo(MainDestination.route)
+                            }
+                        },
+                    )
+                }
             }
             composable(
                 route = DescDestination.route,
@@ -42,12 +46,14 @@ class MainNavProvider @Inject constructor(
                     uriPattern = "marvelapp://heroIdArg/{heroIdArg}"
                 }),
             ) {
-                DescScreen(
-                    snackbarHostState = snackbarHostState,
-                    onBack = {
-                        navigator.onBackClick()
-                    },
-                )
+                MarvelThemeInfinite {
+                    DescScreen(
+                        snackbarHostState = snackbarHostState,
+                        onBack = {
+                            navigator.onBackClick()
+                        },
+                    )
+                }
             }
         }
 }

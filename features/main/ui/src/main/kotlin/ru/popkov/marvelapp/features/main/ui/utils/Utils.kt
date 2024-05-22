@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 
-const val MARVEL_LOGO_URL = "https://iili.io/JMnuvbp.png"
 private val SaveMap = mutableMapOf<String, KeyParams>()
 
 private data class KeyParams(
